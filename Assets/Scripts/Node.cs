@@ -99,25 +99,28 @@ public class Node : MonoBehaviour {
     {
         if (linkPrefab != null)
         {
-            if (AreDiagonallyAligned(transform.position, targetNode.transform.position))
+            GameObject linkInstance = Instantiate(linkPrefab, transform.position, Quaternion.identity);
+            linkInstance.transform.parent = transform;
+
+            if (AreDiagonallyAligned(transform.position, targetNode.transform.position)) //when the line finds an edge
             {
-                GameObject linkInstance = Instantiate(linkPrefab, transform.position, Quaternion.identity);
                 GameObject linkInstance2 = Instantiate(linkPrefab, transform.position, Quaternion.identity);
-                linkInstance.transform.parent = transform;
                 linkInstance2.transform.parent = transform;
 
 
-                if (transform.rotation.x == 0f && transform.rotation.z == 0f)
+                if (transform.rotation.x == 0f && transform.rotation.z == 0f) //if the first node is not on a wall
                 {
                     Link link = linkInstance.GetComponent<Link>();
                     if (link != null)
                     {
+                        //draw horizontal line to wall
                         link.DrawLinktoWall(transform.position, new Vector3(targetNode.transform.position.x, transform.position.y, targetNode.transform.position.z));
                     }
 
                     Link link2 = linkInstance2.GetComponent<Link>();
                     if (link2 != null)
                     {
+                        //draw vertical line from edge
                         link2.DrawLinkfromWall(new Vector3(targetNode.transform.position.x, transform.position.y, targetNode.transform.position.z), targetNode.transform.position);
                     }
                 } else
@@ -125,37 +128,31 @@ public class Node : MonoBehaviour {
                     Link link = linkInstance.GetComponent<Link>();
                     if (link != null)
                     {
+                        //draw vertical line to edge
                         link.DrawLinktoWall(transform.position, new Vector3(transform.position.x, targetNode.transform.position.y, transform.position.z));
                     }
 
                     Link link2 = linkInstance2.GetComponent<Link>();
                     if (link2 != null)
                     {
+                        //draw horizontal line from edge
                         link2.DrawLinkfromWall(new Vector3(transform.position.x, targetNode.transform.position.y, transform.position.z), targetNode.transform.position);
                     }
                 }
-                
-
-                if (!m_linkedNodes.Contains(targetNode))
-                    m_linkedNodes.Add(targetNode);
-                if (!targetNode.LinkedNodes.Contains(this))
-                    targetNode.LinkedNodes.Add(this);
-            } else
+            } else //when the line doesn't find an edge
             {
-                GameObject linkInstance = Instantiate(linkPrefab, transform.position, Quaternion.identity);
-                linkInstance.transform.parent = transform;
-
                 Link link = linkInstance.GetComponent<Link>();
                 if (link != null)
                 {
                     link.DrawLink(transform.position, targetNode.transform.position);
                 }
-
-                if (!m_linkedNodes.Contains(targetNode))
-                    m_linkedNodes.Add(targetNode);
-                if (!targetNode.LinkedNodes.Contains(this))
-                    targetNode.LinkedNodes.Add(this);
             }
+
+            //add nodes to linkednodes list
+            if (!m_linkedNodes.Contains(targetNode))
+                m_linkedNodes.Add(targetNode);
+            if (!targetNode.LinkedNodes.Contains(this))
+                targetNode.LinkedNodes.Add(this);
         }
     }
 
