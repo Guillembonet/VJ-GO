@@ -10,6 +10,8 @@ public class Node : MonoBehaviour {
     List<Node> m_linkedNodes = new List<Node>();
     public List<Node> LinkedNodes { get { return m_linkedNodes; } }
 
+    public Vector3 Coordinates { get { return transform.position; } }
+
     Board m_board;
 
     public GameObject geometry;

@@ -10,6 +10,7 @@ public class ZombieMover : MonoBehaviour
     public iTween.EaseType easeType = iTween.EaseType.easeInOutExpo;
 
     public float moveSpeed = 1.5f;
+    public float rotateTime = 0.5f;
     public float iTweenDelay = 0f;
 
     Vector3 speed;
@@ -31,8 +32,7 @@ public class ZombieMover : MonoBehaviour
 
     public void NextMove()
     {
-        //TODO: add logic
-        Move(transform.position + new Vector3(-Board.spacing, 0f, 0f));
+        Move(m_board.GetBFSNextNodeToPlayer(transform.position).Coordinates);
     }
 
     //true = player moved; false = player couldn't move
@@ -61,7 +61,6 @@ public class ZombieMover : MonoBehaviour
             yield return new WaitForEndOfFrame();
             // Calculate velocity: Velocity = DeltaPosition / DeltaTime
             speed = (prevPos - transform.position) / Time.deltaTime;
-            Debug.Log(speed);
             anim.SetFloat("BlendZ", speed.z);
             anim.SetFloat("BlendX", speed.x);
         }
@@ -73,10 +72,18 @@ public class ZombieMover : MonoBehaviour
         destination = destinationPos;
         yield return new WaitForSeconds(delayTime);
 
-        var heading = target.position - player.position;
-        var distance = heading.magnitude;
-        var direction = heading / distance;
-        if (direction != transform.forward)
+        var heading = destinationPos - transform.position;
+        if (heading/heading.magnitude != transform.forward)
+        {
+            iTween.LookTo(gameObject, iTween.Hash(
+                "looktarget", destinationPos,
+                "delay", iTweenDelay,
+                "easetype", easeType,
+                "time", rotateTime
+            ));
+
+            yield return new WaitForSeconds(0.5f);
+        }
 
         iTween.MoveTo(gameObject, iTween.Hash(
             "x", destinationPos.x,

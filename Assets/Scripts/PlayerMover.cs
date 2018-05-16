@@ -11,6 +11,7 @@ public class PlayerMover : MonoBehaviour {
 
     public float moveSpeed = 1.5f;
     public float iTweenDelay = 0f;
+    public float rotateTime = 0.5f;
 
     public UnityEvent playerMovesEvent;
 
@@ -47,6 +48,20 @@ public class PlayerMover : MonoBehaviour {
         isMoving = true;
         destination = destinationPos;
         yield return new WaitForSeconds(delayTime);
+
+        var heading = destinationPos - transform.position;
+        if (heading / heading.magnitude != transform.forward)
+        {
+            iTween.LookTo(gameObject, iTween.Hash(
+                "looktarget", destinationPos,
+                "delay", iTweenDelay,
+                "easetype", easeType,
+                "time", rotateTime
+            ));
+
+            yield return new WaitForSeconds(0.5f);
+        }
+
         iTween.MoveTo(gameObject, iTween.Hash(
             "x", destinationPos.x,
             "y", destinationPos.y,
