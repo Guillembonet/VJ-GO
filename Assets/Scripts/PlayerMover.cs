@@ -16,9 +16,12 @@ public class PlayerMover : MonoBehaviour {
     public UnityEvent playerMovesEvent;
 
     Board m_board;
+
+    Animator animator;
 	void Awake ()
     {
         m_board = Object.FindObjectOfType<Board>().GetComponent<Board>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     void Start()
@@ -45,6 +48,7 @@ public class PlayerMover : MonoBehaviour {
 
     IEnumerator MoveRoutine(Vector3 destinationPos, float delayTime)
     {
+        animator.SetFloat("Blend", 1);
         isMoving = true;
         destination = destinationPos;
         yield return new WaitForSeconds(delayTime);
@@ -80,6 +84,7 @@ public class PlayerMover : MonoBehaviour {
         transform.position = destinationPos;
         isMoving = false;
         UpdateBoard();
+        animator.SetFloat("Blend", 0);
     }
 
     public void MoveLeft()
