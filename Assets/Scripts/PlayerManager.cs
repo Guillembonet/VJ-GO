@@ -29,21 +29,21 @@ public class PlayerManager : MonoBehaviour {
         {
             if (playerInput.H > 0)
             {
-                playerMover.MoveLeft();
+                playerMover.MoveRight();
             } else if (playerInput.H < 0)
             {
-                playerMover.MoveRight();
+                playerMover.MoveLeft();
             }
         }
         else if (playerInput.H == 0)
         {
             if (playerInput.V > 0)
             {
-                playerMover.MoveBackward();
+                playerMover.MoveForward();
             }
             else if (playerInput.V < 0)
             {
-                playerMover.MoveForward();
+                playerMover.MoveBackward();
             }
         }
     }

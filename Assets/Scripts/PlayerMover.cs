@@ -88,7 +88,7 @@ public class PlayerMover : MonoBehaviour {
         UpdateBoard();
     }
 
-    public void MoveLeft()
+    public void MoveRight()
     {
         Vector3 newPosition = transform.position + new Vector3(Board.spacing, 0f, 0f);
         if (!Move(newPosition))
@@ -99,7 +99,7 @@ public class PlayerMover : MonoBehaviour {
 
     }
 
-    public void MoveRight()
+    public void MoveLeft()
     {
         Vector3 newPosition = transform.position + new Vector3(-Board.spacing, 0f, 0f);
         if (!Move(newPosition))
@@ -109,7 +109,7 @@ public class PlayerMover : MonoBehaviour {
         }
     }
 
-    public void MoveForward()
+    public void MoveBackward()
     {
         Vector3 newPosition = transform.position + new Vector3(0f, 0f, -Board.spacing);
         if (!Move(newPosition))
@@ -123,7 +123,7 @@ public class PlayerMover : MonoBehaviour {
         }
     }
 
-    public void MoveBackward()
+    public void MoveForward()
     {
         Vector3 newPosition = transform.position + new Vector3(0f, 0f, Board.spacing);
         if (!Move(newPosition))
