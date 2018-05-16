@@ -82,6 +82,15 @@ public class Board : MonoBehaviour {
         return null;
     }
 
+    public Node FindZombieNode(ZombieMover zm)
+    {
+        if (zm != null && !zm.isMoving)
+        {
+            return FindNodeAt(zm.transform.position);
+        }
+        return null;
+    }
+
     public void UpdatePlayerNode()
     {
         m_playerNode = FindPlayerNode();
