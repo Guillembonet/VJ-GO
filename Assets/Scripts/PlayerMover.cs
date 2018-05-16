@@ -7,7 +7,8 @@ public class PlayerMover : MonoBehaviour {
 
     public Vector3 destination;
     public bool isMoving = false;
-    public iTween.EaseType easeType = iTween.EaseType.easeInOutExpo;
+    public iTween.EaseType easeTypeMove = iTween.EaseType.linear;
+    public iTween.EaseType easeTypeRotate = iTween.EaseType.easeInOutExpo;
 
     public float moveSpeed = 1.5f;
     public float iTweenDelay = 0f;
@@ -48,7 +49,6 @@ public class PlayerMover : MonoBehaviour {
 
     IEnumerator MoveRoutine(Vector3 destinationPos, float delayTime)
     {
-        animator.SetFloat("Blend", 1);
         isMoving = true;
         destination = destinationPos;
         yield return new WaitForSeconds(delayTime);
@@ -59,20 +59,21 @@ public class PlayerMover : MonoBehaviour {
             iTween.LookTo(gameObject, iTween.Hash(
                 "looktarget", destinationPos,
                 "delay", iTweenDelay,
-                "easetype", easeType,
+                "easetype", easeTypeRotate,
                 "time", rotateTime
             ));
 
             yield return new WaitForSeconds(0.5f);
         }
-
+        
         iTween.MoveTo(gameObject, iTween.Hash(
             "x", destinationPos.x,
             "y", destinationPos.y,
             "z", destinationPos.z,
             "delay", iTweenDelay,
-            "easetype", easeType,
-            "speed", moveSpeed
+            "easetype", easeTypeMove,
+            "speed", moveSpeed,
+            "onstart", "StartMoveAnimation"
         ));
 
         while (Vector3.Distance(destinationPos, transform.position) > 0.01f)
@@ -81,10 +82,10 @@ public class PlayerMover : MonoBehaviour {
         }
 
         iTween.Stop(gameObject);
+        EndMoveAnimation();
         transform.position = destinationPos;
         isMoving = false;
         UpdateBoard();
-        animator.SetFloat("Blend", 0);
     }
 
     public void MoveLeft()
@@ -142,5 +143,15 @@ public class PlayerMover : MonoBehaviour {
         {
             m_board.UpdatePlayerNode();
         }
+    }
+
+    void StartMoveAnimation()
+    {
+        animator.SetTrigger("Run");
+    }
+
+    void EndMoveAnimation()
+    {
+        animator.SetTrigger("Idle");
     }
 }
