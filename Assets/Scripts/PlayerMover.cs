@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 using UnityEngine;
 
 public class PlayerMover : MonoBehaviour {
@@ -10,6 +11,8 @@ public class PlayerMover : MonoBehaviour {
 
     public float moveSpeed = 1.5f;
     public float iTweenDelay = 0f;
+
+    public UnityEvent playerMovesEvent;
 
     Board m_board;
 
@@ -34,6 +37,7 @@ public class PlayerMover : MonoBehaviour {
             Node targetNode = m_board.FindNodeAt(destinationPos);
             if (targetNode != null && m_board.PlayerNode.LinkedNodes.Contains(targetNode))
             {
+                playerMovesEvent.Invoke();
                 StartCoroutine(MoveRoutine(destinationPos, delayTime));
                 return true;
             }
