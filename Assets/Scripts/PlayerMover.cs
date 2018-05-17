@@ -54,28 +54,50 @@ public class PlayerMover : MonoBehaviour {
         destination = destinationPos;
         yield return new WaitForSeconds(delayTime);
 
-        if (!hack)
+        var dirVector = destinationPos - transform.position;
+        var rotation = Quaternion.LookRotation(dirVector);
+        // We just want to rotate our 'y'
+        var cleanedRotation = new Vector3(0, rotation.eulerAngles.y, 0);
+
+        // If 'y' has changed then rotate and furthermore is necessary that our x or z coords have been change too
+        // just for avoid rotation when we are climbing
+        if (cleanedRotation.y != transform.rotation.eulerAngles.y &&
+            (destination.x != transform.position.x || destination.z != transform.position.z ))
         {
-            var dirVector = destinationPos - transform.position;
-            var rotation = Quaternion.LookRotation(dirVector);
-            // We just want to rotate our 'y'
-            var cleanedRotation = new Vector3(0, rotation.eulerAngles.y, 0);
+            iTween.RotateTo(gameObject, iTween.Hash(
+                "rotation", cleanedRotation,
+                "delay", iTweenDelay,
+                "easetype", easeTypeRotate,
+                "time", rotateTime
+            ));
 
-            // If 'y' has changed then rotate and furthermore is necessary that our x or z coords have been change too
-            // just for avoid rotation when we are climbing
-            if (cleanedRotation.y != transform.rotation.eulerAngles.y &&
-                (destination.x != transform.position.x || destination.z != transform.position.z ))
-            {
-                iTween.RotateTo(gameObject, iTween.Hash(
-                    "rotation", cleanedRotation,
-                    "delay", iTweenDelay,
-                    "easetype", easeTypeRotate,
-                    "time", rotateTime
-                ));
+            yield return new WaitForSeconds(0.5f);
+        }
 
-                yield return new WaitForSeconds(0.5f);
-            }
+        if(AreDiagonallyAligned(transform.position, destinationPos))
+        {
+            var xDestination = transform.position.x - 0.7f;
+            var yDestination = transform.position.y + 1f;
+            iTween.MoveTo(gameObject, iTween.Hash(
+                "x", xDestination,
+                "delay", iTweenDelay,
+                "easetype", easeTypeMove,
+                "speed", moveSpeed,
+                "onstart", "SetRunAnimation",
+                "oncomplete", "SetClimbUpAnimation"
+            ));
+            while (transform.position.x != xDestination) yield return null;
 
+            iTween.MoveTo(gameObject, iTween.Hash(
+                "y", yDestination,
+                "delay", iTweenDelay,
+                "easetype", easeTypeMove,
+                "speed", moveSpeed
+            ));
+            while (transform.position.y != yDestination) yield return null;
+        }
+        else
+        {
             iTween.MoveTo(gameObject, iTween.Hash(
                 "x", destinationPos.x,
                 "y", destinationPos.y,
@@ -83,22 +105,20 @@ public class PlayerMover : MonoBehaviour {
                 "delay", iTweenDelay,
                 "easetype", easeTypeMove,
                 "speed", moveSpeed,
-                "onstart", "StartMoveAnimation"
+                "onstart", "SetRunAnimation"
             ));
-        }
-        else
-        {
-            animator.SetTrigger("Climb");
+
+            while (Vector3.Distance(destinationPos, transform.position) > 0.1f)
+            {
+                yield return null;
+            }
+
+            iTween.Stop(gameObject);
+            SetIdleAnimation();
+            transform.position = destinationPos;
+            
         }
 
-        while (Vector3.Distance(destinationPos, transform.position) > 0.01f)
-        {
-            yield return null;
-        }
-
-        iTween.Stop(gameObject);
-        EndMoveAnimation();
-        transform.position = destinationPos;
         isMoving = false;
         UpdateBoard();
     }
@@ -160,14 +180,19 @@ public class PlayerMover : MonoBehaviour {
         }
     }
 
-    void StartMoveAnimation()
+    void SetRunAnimation()
     {
         animator.SetTrigger("Run");
     }
 
-    void EndMoveAnimation()
+    void SetIdleAnimation()
     {
         animator.SetTrigger("Idle");
+    }
+
+    void SetClimbUpAnimation()
+    {
+        animator.SetTrigger("ClimbUp");
     }
 
     bool AreDiagonallyAligned(Vector3 start, Vector3 end)
