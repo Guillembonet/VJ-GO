@@ -182,4 +182,11 @@ public class Node : MonoBehaviour {
         }
         return null;
     }
+
+    public Node GetLinkedNodeInDirection(Vector3 direction)
+    {
+        return m_linkedNodes.Find(n => n.Coordinates == transform.position + (direction * Board.spacing)
+                || n.Coordinates == transform.position + (direction * (Board.spacing / 2f)) + new Vector3(0f, Board.spacing / 2f, 0f)
+                || n.Coordinates == transform.position + (direction * (Board.spacing / 2f)) - new Vector3(0f, Board.spacing / 2f, 0f));
+    }
 }
