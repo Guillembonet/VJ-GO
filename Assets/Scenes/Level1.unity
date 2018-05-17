@@ -737,6 +737,11 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 114382685460866302, guid: 687907c4b92733848b678498db4ec342,
+        type: 2}
+      propertyPath: wall
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 687907c4b92733848b678498db4ec342, type: 2}
   m_IsPrefabParent: 0
@@ -1151,6 +1156,11 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.x
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 114382685460866302, guid: 687907c4b92733848b678498db4ec342,
+        type: 2}
+      propertyPath: wall
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 687907c4b92733848b678498db4ec342, type: 2}
   m_IsPrefabParent: 0
@@ -1208,6 +1218,11 @@ Prefab:
     - target: {fileID: 4273952189734918, guid: 687907c4b92733848b678498db4ec342, type: 2}
       propertyPath: m_LocalScale.z
       value: 1.0000005
+      objectReference: {fileID: 0}
+    - target: {fileID: 114382685460866302, guid: 687907c4b92733848b678498db4ec342,
+        type: 2}
+      propertyPath: wall
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 687907c4b92733848b678498db4ec342, type: 2}
@@ -1277,7 +1292,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  hack: 0
 --- !u!114 &675095844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1950,6 +1964,11 @@ Prefab:
     - target: {fileID: 4273952189734918, guid: 687907c4b92733848b678498db4ec342, type: 2}
       propertyPath: m_LocalScale.z
       value: 1.000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 114382685460866302, guid: 687907c4b92733848b678498db4ec342,
+        type: 2}
+      propertyPath: wall
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 687907c4b92733848b678498db4ec342, type: 2}

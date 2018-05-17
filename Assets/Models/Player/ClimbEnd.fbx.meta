@@ -145,7 +145,7 @@ ModelImporter:
     4300000: Head_Hands
     4300002: Body
     4300004: Lower_Armor
-    7400000: Climb
+    7400000: ClimbEnd
     9500000: //RootNode
     13700000: Body
     13700002: Head_Hands
@@ -179,25 +179,25 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Climb
+      name: ClimbEnd
       takeName: mixamo.com
-      firstFrame: 0
+      firstFrame: 30
       lastFrame: 115
       wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
+      orientationOffsetY: -1
+      level: 0.5
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 1
-      loopBlendPositionY: 0
+      loopBlendPositionY: 1
       loopBlendPositionXZ: 1
       keepOriginalOrientation: 0
       keepOriginalPositionY: 0
       keepOriginalPositionXZ: 0
-      heightFromFeet: 1
+      heightFromFeet: 0
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []

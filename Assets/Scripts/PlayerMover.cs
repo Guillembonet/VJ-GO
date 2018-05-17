@@ -19,7 +19,7 @@ public class PlayerMover : MonoBehaviour {
     Board m_board;
 
     Animator animator;
-    public bool hack = false;
+    
 	void Awake ()
     {
         m_board = Object.FindObjectOfType<Board>().GetComponent<Board>();
@@ -73,28 +73,104 @@ public class PlayerMover : MonoBehaviour {
 
             yield return new WaitForSeconds(0.5f);
         }
+        Node NodeDestination = m_board.FindNodeAt(destinationPos);
 
-        if(AreDiagonallyAligned(transform.position, destinationPos))
+        if (AreDiagonallyAligned(transform.position, destinationPos))
         {
-            var xDestination = transform.position.x - 0.7f;
-            var yDestination = transform.position.y + 1f;
-            iTween.MoveTo(gameObject, iTween.Hash(
-                "x", xDestination,
-                "delay", iTweenDelay,
-                "easetype", easeTypeMove,
-                "speed", moveSpeed,
-                "onstart", "SetRunAnimation",
-                "oncomplete", "SetClimbUpAnimation"
-            ));
-            while (transform.position.x != xDestination) yield return null;
+            if (NodeDestination.wall && 
+                (destinationPos.x != transform.position.x || destinationPos.z != transform.position.z))
+            {
+                Debug.Log("Entramos modo1");
+                string horizontal = "";
+                float hDestination;
+                float vDestination;
+                if (transform.forward == new Vector3(-1, 0, 0))
+                {
+                    horizontal = "x";
+                    hDestination = transform.position.x - 0.7f;
+                }
+                else
+                {
+                    horizontal = "z";
+                    hDestination = transform.position.z - 0.7f;
+                }
+                vDestination = transform.position.y + Board.spacing / 2;
 
+                iTween.MoveTo(gameObject, iTween.Hash(
+                    horizontal, hDestination,
+                    "delay", iTweenDelay,
+                    "easetype", easeTypeMove,
+                    "speed", moveSpeed,
+                    "onstart", "SetRunAnimation",
+                    "oncomplete", "SetClimbUpAnimation"
+                ));
+                if (horizontal == "x")
+                    while (transform.position.x != hDestination) yield return null;
+                else
+                    while (transform.position.z != hDestination) yield return null;
+
+                iTween.MoveTo(gameObject, iTween.Hash(
+                    "y", vDestination,
+                    "delay", iTweenDelay,
+                    "easetype", easeTypeMove,
+                    "speed", 0.5f
+                ));
+                while (transform.position.y != vDestination) yield return null;
+            }
+            else
+            {
+                Debug.Log("Entramos modo 3");
+
+                string horizontal = "";
+                float hDestination;
+                float vDestination;
+                if (transform.forward == new Vector3(-1, 0, 0))
+                {
+                    horizontal = "x";
+                    hDestination = transform.position.x - 1.3f;
+                }
+                else
+                {
+                    horizontal = "z";
+                    hDestination = transform.position.z - 1.3f;
+                }
+                vDestination = transform.position.y + Board.spacing / 2;
+
+                iTween.MoveTo(gameObject, iTween.Hash(
+                    "y", vDestination,
+                    "delay", iTweenDelay,
+                    "easetype", easeTypeMove,
+                    "speed", 0.5f,
+                    "onstart", "SetClimbEndAnimation"
+                ));
+                while (transform.position.y != vDestination) yield return null;
+
+                iTween.MoveTo(gameObject, iTween.Hash(
+                    horizontal, hDestination,
+                    "delay", iTweenDelay,
+                    "easetype", easeTypeMove,
+                    "speed", moveSpeed,
+                    "onstart", "SetRunAnimation"
+                ));
+                if (horizontal == "x")
+                    while (transform.position.x != hDestination) yield return null;
+                else
+                    while (transform.position.z != hDestination) yield return null;
+                SetIdleAnimation();
+            }
+        }
+        else if (NodeDestination.wall)
+        {
+            Debug.Log("Entramos modo 222");
+            var vDestination = transform.position.y + Board.spacing;
             iTween.MoveTo(gameObject, iTween.Hash(
-                "y", yDestination,
+                "y", vDestination,
                 "delay", iTweenDelay,
                 "easetype", easeTypeMove,
-                "speed", moveSpeed
+                "speed", 1f,
+                "onstart", "SetClimbUpAnimation"
             ));
-            while (transform.position.y != yDestination) yield return null;
+            while (transform.position.y != vDestination) yield return null;
         }
         else
         {
@@ -192,7 +268,22 @@ public class PlayerMover : MonoBehaviour {
 
     void SetClimbUpAnimation()
     {
+        /*Debug.Log(animator.GetCurrentAnimatorStateInfo(0).IsName("ClimbUp"));
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("ClimbUp") && animator.isInitialized)
+        {
+            animator.Rebind();
+            Debug.Log("Rebindo");
+        }
+        else animator.SetTrigger("ClimbUp");*/
+        //animator.Play("ClimbUp", 0, 0f);
+
+
         animator.SetTrigger("ClimbUp");
+    }
+
+    void SetClimbEndAnimation()
+    {
+        animator.SetTrigger("ClimbEnd");
     }
 
     bool AreDiagonallyAligned(Vector3 start, Vector3 end)
