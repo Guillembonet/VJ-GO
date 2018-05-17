@@ -19,6 +19,7 @@ public class PlayerMover : MonoBehaviour {
     Board m_board;
 
     Animator animator;
+    public bool hack = false;
 	void Awake ()
     {
         m_board = Object.FindObjectOfType<Board>().GetComponent<Board>();
@@ -53,28 +54,42 @@ public class PlayerMover : MonoBehaviour {
         destination = destinationPos;
         yield return new WaitForSeconds(delayTime);
 
-        var heading = destinationPos - transform.position;
-        if (heading / heading.magnitude != transform.forward)
+        if (!hack)
         {
-            iTween.LookTo(gameObject, iTween.Hash(
-                "looktarget", destinationPos,
-                "delay", iTweenDelay,
-                "easetype", easeTypeRotate,
-                "time", rotateTime
-            ));
+            var dirVector = destinationPos - transform.position;
+            var rotation = Quaternion.LookRotation(dirVector);
+            // We just want to rotate our 'y'
+            var cleanedRotation = new Vector3(0, rotation.eulerAngles.y, 0);
 
-            yield return new WaitForSeconds(0.5f);
+            // If 'y' has changed then rotate and furthermore is necessary that our x or z coords have been change too
+            // just for avoid rotation when we are climbing
+            if (cleanedRotation.y != transform.rotation.eulerAngles.y &&
+                (destination.x != transform.position.x || destination.z != transform.position.z ))
+            {
+                iTween.RotateTo(gameObject, iTween.Hash(
+                    "rotation", cleanedRotation,
+                    "delay", iTweenDelay,
+                    "easetype", easeTypeRotate,
+                    "time", rotateTime
+                ));
+
+                yield return new WaitForSeconds(0.5f);
+            }
+
+            iTween.MoveTo(gameObject, iTween.Hash(
+                "x", destinationPos.x,
+                "y", destinationPos.y,
+                "z", destinationPos.z,
+                "delay", iTweenDelay,
+                "easetype", easeTypeMove,
+                "speed", moveSpeed,
+                "onstart", "StartMoveAnimation"
+            ));
         }
-        
-        iTween.MoveTo(gameObject, iTween.Hash(
-            "x", destinationPos.x,
-            "y", destinationPos.y,
-            "z", destinationPos.z,
-            "delay", iTweenDelay,
-            "easetype", easeTypeMove,
-            "speed", moveSpeed,
-            "onstart", "StartMoveAnimation"
-        ));
+        else
+        {
+            animator.SetTrigger("Climb");
+        }
 
         while (Vector3.Distance(destinationPos, transform.position) > 0.01f)
         {
@@ -153,5 +168,11 @@ public class PlayerMover : MonoBehaviour {
     void EndMoveAnimation()
     {
         animator.SetTrigger("Idle");
+    }
+
+    bool AreDiagonallyAligned(Vector3 start, Vector3 end)
+    {
+        if (start.y - end.y != 0f && (start.x != end.x || start.z != end.z)) return true;
+        else return false;
     }
 }
