@@ -82,43 +82,93 @@ public class PlayerMover : MonoBehaviour
             if (NodeDestination.wall &&
                 (destinationPos.x != transform.position.x || destinationPos.z != transform.position.z))
             {
-                Debug.Log("Entramos modo1");
-                string horizontal = "";
-                float hDestination;
-                float vDestination;
-                if (transform.forward == new Vector3(-1, 0, 0))
+                if (destinationPos.y > transform.position.y)
                 {
-                    horizontal = "x";
-                    hDestination = transform.position.x - 0.7f;
+                    string horizontal = "";
+                    float hDestination;
+                    float vDestination;
+                    if (transform.forward == new Vector3(-1, 0, 0))
+                    {
+                        horizontal = "x";
+                        hDestination = transform.position.x - 0.7f;
+                    }
+                    else
+                    {
+                        horizontal = "z";
+                        hDestination = transform.position.z - 0.7f;
+                    }
+                    vDestination = transform.position.y + Board.spacing / 2;
+
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        horizontal, hDestination,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", moveSpeed,
+                        "onstart", "SetRunAnimation",
+                        "oncomplete", "SetClimbUpAnimation"
+                    ));
+                    if (horizontal == "x")
+                        while (transform.position.x != hDestination) yield return null;
+                    else
+                        while (transform.position.z != hDestination) yield return null;
+
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        "y", vDestination,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", 0.5f
+                    ));
+                    while (transform.position.y != vDestination) yield return null;
                 }
-                else
-                {
-                    horizontal = "z";
-                    hDestination = transform.position.z - 0.7f;
+                else{
+                    string horizontal = "";
+                    float hDestination;
+                    float vDestination;
+                    if (Utility.Vector3Round(transform.forward) == new Vector3(1, 0, 0))
+                    {
+                        horizontal = "x";
+                        hDestination = transform.position.x + 1.3f;
+                    }
+                    else
+                    {
+                        horizontal = "z";
+                        hDestination = transform.position.z + 1.3f;
+                    }
+                    vDestination = transform.position.y - Board.spacing / 2;
+                    
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        horizontal, hDestination,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", moveSpeed,
+                        "onstart", "SetRunAnimation"
+                    ));
+                    if (horizontal == "x")
+                        while (transform.position.x != hDestination) yield return null;
+                    else
+                        while (transform.position.z != hDestination) yield return null;
+                    
+                    iTween.RotateAdd(gameObject, iTween.Hash(
+                        "y", 180f,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeRotate,
+                        "time", rotateTime
+                    ));
+                    yield return new WaitForSeconds(rotateTime);
+
+                    // We reverse climb up animation
+                    animator.SetFloat("Direction", -1.0f);
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        "y", vDestination,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", 0.5f,
+                        "onstart", "SetClimbUpAnimation"
+                    ));
+                    while (transform.position.y != vDestination) yield return null;
+                    // Set default animation
+                    animator.SetFloat("Direction", 1.0f);
                 }
-                vDestination = transform.position.y + Board.spacing / 2;
-
-                iTween.MoveTo(gameObject, iTween.Hash(
-                    horizontal, hDestination,
-                    "delay", iTweenDelay,
-                    "easetype", easeTypeMove,
-                    "speed", moveSpeed,
-                    "onstart", "SetRunAnimation",
-                    "oncomplete", "SetClimbUpAnimation"
-                ));
-                if (horizontal == "x")
-                    while (transform.position.x != hDestination) yield return null;
-                else
-                    while (transform.position.z != hDestination) yield return null;
-
-                iTween.MoveTo(gameObject, iTween.Hash(
-                    "y", vDestination,
-                    "delay", iTweenDelay,
-                    "easetype", easeTypeMove,
-                    "speed", 0.5f
-                ));
-                while (transform.position.y != vDestination) yield return null;
-
             }
             // Si el nodo destino no es vertical, no es escalada vertical, es decir, llegamos a la cumbre
             else
@@ -126,8 +176,6 @@ public class PlayerMover : MonoBehaviour
                 // Si vamos hacia arriba
                 if (destinationPos.y > transform.position.y)
                 {
-                    Debug.Log("Entramos modo 3");
-
                     string horizontal = "";
                     float hDestination;
                     float vDestination;
@@ -173,7 +221,6 @@ public class PlayerMover : MonoBehaviour
                     float vDestination;
                     if (Utility.Vector3Round(transform.forward) == (new Vector3(1f, 0, 0)))
                     {
-                        Debug.Log(transform.forward);
                         horizontal = "x";
                         hDestination = transform.position.x + 0.7f;
                     }
@@ -205,7 +252,6 @@ public class PlayerMover : MonoBehaviour
                     else
                         while (transform.position.z != hDestination) yield return null;
                     SetIdleAnimation();
-                    Debug.Log("aqui");
                 }
 
             }
@@ -213,7 +259,6 @@ public class PlayerMover : MonoBehaviour
         // Si la escalada es vertical..
         else if (NodeDestination.wall)
         {
-            Debug.Log("Entramos modo 222");
             float vDestination = 0;
             if (destinationPos.y > transform.position.y)
                 vDestination = transform.position.y + Board.spacing;
@@ -325,16 +370,6 @@ public class PlayerMover : MonoBehaviour
 
     void SetClimbUpAnimation()
     {
-        /*Debug.Log(animator.GetCurrentAnimatorStateInfo(0).IsName("ClimbUp"));
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("ClimbUp") && animator.isInitialized)
-        {
-            animator.Rebind();
-            Debug.Log("Rebindo");
-        }
-        else animator.SetTrigger("ClimbUp");*/
-        //animator.Play("ClimbUp", 0, 0f);
-
-
         animator.SetTrigger("ClimbUp");
     }
 
