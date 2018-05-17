@@ -25,6 +25,9 @@ public class Board : MonoBehaviour {
     Node m_playerNode;
     public Node PlayerNode { get { return m_playerNode; } }
 
+    Node m_previousPlayerNode;
+    public Node PreviousPlayerNode { get { return m_previousPlayerNode; } }
+
     Node m_goalNode;
     public Node GoalNode { get { return m_goalNode; } }
 
@@ -93,6 +96,8 @@ public class Board : MonoBehaviour {
 
     public void UpdatePlayerNode()
     {
+        if (m_playerNode != null)
+            m_previousPlayerNode = m_playerNode;
         m_playerNode = FindPlayerNode();
     }
 
@@ -111,61 +116,5 @@ public class Board : MonoBehaviour {
         {
             m_playerNode.InitNode();
         }
-    }
-
-    public Node GetBFSNextNodeToPlayer(Vector3 fromPos)
-    {
-        Node fromNode = FindNodeAt(fromPos);
-        bool found = false;
-
-        if (fromNode != null && m_playerNode != null)
-        {
-            Dictionary<Node, int> nodes = new Dictionary<Node, int>();
-            Queue<Node> nodesQueue = new Queue<Node>();
-            int distance = 0;
-            nodesQueue.Enqueue(fromNode);
-            nodes.Add(fromNode, distance);
-            while (nodesQueue.Count > 0 && !found)
-            {
-                ++distance;
-                Node current = nodesQueue.Dequeue();
-                if (current == m_playerNode)
-                    found = true;
-                foreach (Node n in current.LinkedNodes)
-                {
-                    if (!nodes.ContainsKey(n))
-                    {
-                        nodes.Add(n, distance);
-                        nodesQueue.Enqueue(n);
-                    }
-                }
-            }
-
-            if (found)
-            {
-                Node currentNode = m_playerNode;
-                int min = nodes[currentNode.LinkedNodes[0]];
-                Node nextNode = currentNode.LinkedNodes[0];
-
-                while (min > 1)
-                {
-                    foreach (Node n in currentNode.LinkedNodes)
-                    {
-                        if (nodes.ContainsKey(n))
-                        {
-                            int current = nodes[n];
-                            if (current < min)
-                            {
-                                min = current;
-                                nextNode = n;
-                            }
-                        }
-                    }
-                    currentNode = nextNode;
-                }
-                return currentNode;
-            }
-        }
-        return null;
     }
 }

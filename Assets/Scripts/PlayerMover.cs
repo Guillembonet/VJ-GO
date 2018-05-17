@@ -41,8 +41,8 @@ public class PlayerMover : MonoBehaviour
             Node targetNode = m_board.FindNodeAt(destinationPos);
             if (targetNode != null && m_board.PlayerNode.LinkedNodes.Contains(targetNode))
             {
-                playerMovesEvent.Invoke();
                 StartCoroutine(MoveRoutine(destinationPos, delayTime));
+                
                 return true;
             }
         }
@@ -76,7 +76,7 @@ public class PlayerMover : MonoBehaviour
         }
         Node NodeDestination = m_board.FindNodeAt(destinationPos);
 
-        if (AreDiagonallyAligned(transform.position, destinationPos))
+        if (Utility.AreDiagonallyAligned(transform.position, destinationPos))
         {
             // Si el nodo destino es vertical y además no es escalada vertical
             if (NodeDestination.wall &&
@@ -299,6 +299,7 @@ public class PlayerMover : MonoBehaviour
 
         isMoving = false;
         UpdateBoard();
+        playerMovesEvent.Invoke();
     }
 
     public void MoveRight()
@@ -376,11 +377,5 @@ public class PlayerMover : MonoBehaviour
     void SetClimbEndAnimation()
     {
         animator.SetTrigger("ClimbEnd");
-    }
-
-    bool AreDiagonallyAligned(Vector3 start, Vector3 end)
-    {
-        if (start.y - end.y != 0f && (start.x != end.x || start.z != end.z)) return true;
-        else return false;
     }
 }

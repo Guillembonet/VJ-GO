@@ -6,13 +6,17 @@ public class ZombieMover : MonoBehaviour
 {
     public Vector3 destination;
     public bool isMoving = false;
-    public iTween.EaseType easeType = iTween.EaseType.easeInOutExpo;
+    public iTween.EaseType easeTypeRotate = iTween.EaseType.easeInOutExpo;
+    public iTween.EaseType easeTypeMove = iTween.EaseType.linear;
 
     public float moveSpeed = 1.5f;
     public float rotateTime = 0.5f;
     public float iTweenDelay = 0f;
 
-    bool foundPlayer = false;
+    bool m_foundPlayer = false;
+    Node m_nextMove;
+
+    bool m_standing = true;
 
     Vector3 speed;
     Vector3 prevPos;
@@ -26,25 +30,32 @@ public class ZombieMover : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
     }
 
-    void Start()
-    {
-        StartCoroutine(CalcVelocity());
-    }
-
     public void NextMove()
     {
         if (m_board != null)
         {
-            Node currentNode = m_board.FindNodeAt(transform.position).GetLinkedNodeInDirection(transform.forward);
-            if (currentNode != null)
+            if (m_foundPlayer)
             {
-                Node nextNode = currentNode.GetLinkedNodeInDirection(transform.forward);
-                if (nextNode != null && nextNode == m_board.PlayerNode)
+                if (m_nextMove != null)
                 {
-                    Move(currentNode.Coordinates);
-                    foundPlayer = true;
+                    if (!Move(m_nextMove.Coordinates)) m_foundPlayer = false;
+                    else m_nextMove = m_board.PreviousPlayerNode;
+                }
+            } else
+            {
+                Node currentNode = m_board.FindNodeAt(transform.position).GetLinkedNodeInDirection(transform.forward);
+                if (currentNode != null)
+                {
+                    Node nextNode = currentNode.GetLinkedNodeInDirection(transform.forward);
+                    if (nextNode != null && nextNode == m_board.PlayerNode)
+                    {
+                        //zombie finds player and prepares to move in the next turn
+                        m_foundPlayer = true;
+                        m_nextMove = currentNode;
+                    }
                 }
             }
+            
             
         }
         
@@ -66,105 +77,135 @@ public class ZombieMover : MonoBehaviour
         return false;
     }
 
-    IEnumerator CalcVelocity()
-    {
-        while (Application.isPlaying)
-        {
-            // Position at frame start
-            prevPos = transform.position;
-            // Wait till it the end of the frame
-            yield return new WaitForEndOfFrame();
-            // Calculate velocity: Velocity = DeltaPosition / DeltaTime
-            speed = (prevPos - transform.position) / Time.deltaTime;
-            anim.SetFloat("BlendZ", speed.z);
-            anim.SetFloat("BlendX", speed.x);
-        }
-    }
-
     IEnumerator MoveRoutine(Vector3 destinationPos, float delayTime)
     {
         isMoving = true;
         destination = destinationPos;
         yield return new WaitForSeconds(delayTime);
 
-        var heading = destinationPos - transform.position;
-        if (heading/heading.magnitude != transform.forward)
-        {
-            iTween.LookTo(gameObject, iTween.Hash(
-                "looktarget", destinationPos,
-                "delay", iTweenDelay,
-                "easetype", easeType,
-                "time", rotateTime
-            ));
+        var lookPos = new Vector3(destinationPos.x, transform.position.y, destinationPos.z);
+        var heading = lookPos - transform.position;
+        
 
-            yield return new WaitForSeconds(0.5f);
+        if (Utility.AreParallelToFloor(transform.position, destinationPos)) {
+            if (heading / heading.magnitude != transform.forward)
+            {
+                iTween.LookTo(gameObject, iTween.Hash(
+                    "looktarget", destinationPos,
+                    "delay", iTweenDelay,
+                    "easetype", easeTypeRotate,
+                    "time", rotateTime
+                ));
+
+                yield return new WaitForSeconds(iTweenDelay + rotateTime);
+            }
+
+            iTween.MoveTo(gameObject, iTween.Hash(
+                "x", destinationPos.x,
+                "y", destinationPos.y,
+                "z", destinationPos.z,
+                "delay", iTweenDelay,
+                "easetype", easeTypeMove,
+                "speed", moveSpeed,
+                "onstart", "SetRunAnimation"
+            ));
+        } else if (Utility.AreDiagonallyAligned(transform.position, destinationPos))
+        {
+            if (Utility.Arg1IsHigherThanArg2(transform.position, destinationPos))
+            {
+                if (m_standing) //from edge to climbing
+                {
+                    m_standing = false;
+
+                } else //from climbing to floor
+                {
+                    m_standing = true;
+                }
+            } else
+            {
+                if (m_standing) //from floor to climbing
+                {
+                    Debug.Log("Floor to Climb");
+                    if (heading / heading.magnitude != transform.forward)
+                    {
+                        iTween.LookTo(gameObject, iTween.Hash(
+                            "looktarget", lookPos,
+                            "delay", iTweenDelay,
+                            "easetype", easeTypeRotate,
+                            "time", rotateTime
+                        ));
+
+                        yield return new WaitForSeconds(iTweenDelay + rotateTime);
+                    }
+
+                    float destinationX = 0f;
+                    float destinationZ = 0f;
+                    Utility.GetClimbOffset(ref destinationX, ref destinationZ, destinationPos, transform.forward);
+
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        "x", destinationX,
+                        "z", destinationZ,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", moveSpeed,
+                        "onstart", "SetRunAnimation",
+                        "oncomplete", "SetClimbUpAnimation"
+                    ));
+
+                    while (transform.position != new Vector3(destinationX, transform.position.y, destinationZ)) yield return null;
+
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        "y", destinationPos.y,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", 0.5f
+                    ));
+
+                    m_standing = false;
+                }
+                else //from climbing to edge
+                {
+                    m_standing = true;
+                }
+            }
+        } else if (Utility.AreVerticallyAligned(transform.position, destinationPos))
+        {
+            if (Utility.Arg1IsHigherThanArg2(transform.position, destinationPos)) //descending climb
+            {
+
+            }
+            else //ascending climb
+            {
+
+            }
         }
 
-        iTween.MoveTo(gameObject, iTween.Hash(
-            "x", destinationPos.x,
-            "y", destinationPos.y,
-            "z", destinationPos.z,
-            "delay", iTweenDelay,
-            "easetype", easeType,
-            "speed", moveSpeed
-        ));
-
-        while (Vector3.Distance(destinationPos, transform.position) > 0.01f)
+        if (m_standing)
         {
-            yield return null;
+            while (Vector3.Distance(destinationPos, transform.position) > 0.01f)
+            {
+                yield return null;
+            }
         }
 
         iTween.Stop(gameObject);
         transform.position = destinationPos;
+        if (m_standing) SetIdleAnimation();
         isMoving = false;
     }
 
-    public void MoveLeft()
+    void SetRunAnimation()
     {
-        Vector3 newPosition = transform.position + new Vector3(Board.spacing, 0f, 0f);
-        if (!Move(newPosition))
-        {
-            newPosition = transform.position + new Vector3(Board.spacing / 2f, -Board.spacing / 2f, 0f);
-            Move(newPosition);
-        }
-
+        anim.SetTrigger("Run");
     }
 
-    public void MoveRight()
+    void SetIdleAnimation()
     {
-        Vector3 newPosition = transform.position + new Vector3(-Board.spacing, 0f, 0f);
-        if (!Move(newPosition))
-        {
-            newPosition = transform.position + new Vector3(-Board.spacing / 2f, Board.spacing / 2f, 0f);
-            Move(newPosition);
-        }
+        anim.SetTrigger("Idle");
     }
 
-    public void MoveForward()
+    void SetClimbUpAnimation()
     {
-        Vector3 newPosition = transform.position + new Vector3(0f, 0f, -Board.spacing);
-        if (!Move(newPosition))
-        {
-            newPosition = transform.position + new Vector3(0f, Board.spacing / 2f, -Board.spacing / 2f);
-            if (!Move(newPosition))
-            {
-                newPosition = transform.position + new Vector3(0f, Board.spacing, 0f);
-                Move(newPosition);
-            }
-        }
-    }
-
-    public void MoveBackward()
-    {
-        Vector3 newPosition = transform.position + new Vector3(0f, 0f, Board.spacing);
-        if (!Move(newPosition))
-        {
-            newPosition = transform.position + new Vector3(0f, -Board.spacing / 2f, Board.spacing / 2f);
-            if (!Move(newPosition))
-            {
-                newPosition = transform.position + new Vector3(0f, -Board.spacing, 0f);
-                Move(newPosition);
-            }
-        }
+        anim.SetTrigger("ClimbUp");
     }
 }
