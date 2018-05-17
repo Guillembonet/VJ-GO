@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ZombieMover : MonoBehaviour
 {
-
     public Vector3 destination;
     public bool isMoving = false;
     public iTween.EaseType easeType = iTween.EaseType.easeInOutExpo;
@@ -12,6 +11,8 @@ public class ZombieMover : MonoBehaviour
     public float moveSpeed = 1.5f;
     public float rotateTime = 0.5f;
     public float iTweenDelay = 0f;
+
+    bool foundPlayer = false;
 
     Vector3 speed;
     Vector3 prevPos;
@@ -32,7 +33,21 @@ public class ZombieMover : MonoBehaviour
 
     public void NextMove()
     {
-        Move(m_board.GetBFSNextNodeToPlayer(transform.position).Coordinates);
+        if (m_board != null)
+        {
+            Node currentNode = m_board.FindNodeAt(transform.position).GetLinkedNodeInDirection(transform.forward);
+            if (currentNode != null)
+            {
+                Node nextNode = currentNode.GetLinkedNodeInDirection(transform.forward);
+                if (nextNode != null && nextNode == m_board.PlayerNode)
+                {
+                    Move(currentNode.Coordinates);
+                    foundPlayer = true;
+                }
+            }
+            
+        }
+        
     }
 
     //true = player moved; false = player couldn't move
