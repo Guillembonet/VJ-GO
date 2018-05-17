@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
 
-public class PlayerMover : MonoBehaviour {
+public class PlayerMover : MonoBehaviour
+{
 
     public Vector3 destination;
     public bool isMoving = false;
@@ -19,8 +20,8 @@ public class PlayerMover : MonoBehaviour {
     Board m_board;
 
     Animator animator;
-    
-	void Awake ()
+
+    void Awake()
     {
         m_board = Object.FindObjectOfType<Board>().GetComponent<Board>();
         animator = GetComponentInChildren<Animator>();
@@ -31,7 +32,7 @@ public class PlayerMover : MonoBehaviour {
         UpdateBoard();
 
     }
-    
+
     //true = player moved; false = player couldn't move
     public bool Move(Vector3 destinationPos, float delayTime = 0f)
     {
@@ -62,7 +63,7 @@ public class PlayerMover : MonoBehaviour {
         // If 'y' has changed then rotate and furthermore is necessary that our x or z coords have been change too
         // just for avoid rotation when we are climbing
         if (cleanedRotation.y != transform.rotation.eulerAngles.y &&
-            (destination.x != transform.position.x || destination.z != transform.position.z ))
+            (destination.x != transform.position.x || destination.z != transform.position.z))
         {
             iTween.RotateTo(gameObject, iTween.Hash(
                 "rotation", cleanedRotation,
@@ -77,7 +78,8 @@ public class PlayerMover : MonoBehaviour {
 
         if (AreDiagonallyAligned(transform.position, destinationPos))
         {
-            if (NodeDestination.wall && 
+            // Si el nodo destino es vertical y además no es escalada vertical
+            if (NodeDestination.wall &&
                 (destinationPos.x != transform.position.x || destinationPos.z != transform.position.z))
             {
                 Debug.Log("Entramos modo1");
@@ -116,53 +118,107 @@ public class PlayerMover : MonoBehaviour {
                     "speed", 0.5f
                 ));
                 while (transform.position.y != vDestination) yield return null;
+
             }
+            // Si el nodo destino no es vertical, no es escalada vertical, es decir, llegamos a la cumbre
             else
-            {
-                Debug.Log("Entramos modo 3");
-
-                string horizontal = "";
-                float hDestination;
-                float vDestination;
-                if (transform.forward == new Vector3(-1, 0, 0))
+            {   
+                // Si vamos hacia arriba
+                if (destinationPos.y > transform.position.y)
                 {
-                    horizontal = "x";
-                    hDestination = transform.position.x - 1.3f;
+                    Debug.Log("Entramos modo 3");
+
+                    string horizontal = "";
+                    float hDestination;
+                    float vDestination;
+                    if (transform.forward == new Vector3(-1, 0, 0))
+                    {
+                        horizontal = "x";
+                        hDestination = transform.position.x - 1.3f;
+                    }
+                    else
+                    {
+                        horizontal = "z";
+                        hDestination = transform.position.z - 1.3f;
+                    }
+                    vDestination = transform.position.y + Board.spacing / 2;
+
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        "y", vDestination,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", 0.5f,
+                        "onstart", "SetClimbEndAnimation"
+                    ));
+                    while (transform.position.y != vDestination) yield return null;
+
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        horizontal, hDestination,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", moveSpeed,
+                        "onstart", "SetRunAnimation"
+                    ));
+                    if (horizontal == "x")
+                        while (transform.position.x != hDestination) yield return null;
+                    else
+                        while (transform.position.z != hDestination) yield return null;
+                    SetIdleAnimation();
                 }
+                // Si vamos hacia abajo
                 else
                 {
-                    horizontal = "z";
-                    hDestination = transform.position.z - 1.3f;
+                    string horizontal = "";
+                    float hDestination;
+                    float vDestination;
+                    if (Utility.Vector3Round(transform.forward) == (new Vector3(1f, 0, 0)))
+                    {
+                        Debug.Log(transform.forward);
+                        horizontal = "x";
+                        hDestination = transform.position.x + 0.7f;
+                    }
+                    else
+                    {
+                        horizontal = "z";
+                        hDestination = transform.position.z + 0.7f;
+                    }
+                    vDestination = transform.position.y - Board.spacing / 2;
+
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        "y", vDestination,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", 3f,
+                        "onstart", "SetIdleAnimation"
+                    ));
+                    while (transform.position.y != vDestination) yield return null;
+
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        horizontal, hDestination,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", moveSpeed,
+                        "onstart", "SetRunAnimation"
+                    ));
+                    if (horizontal == "x")
+                        while (transform.position.x != hDestination) yield return null;
+                    else
+                        while (transform.position.z != hDestination) yield return null;
+                    SetIdleAnimation();
+                    Debug.Log("aqui");
                 }
-                vDestination = transform.position.y + Board.spacing / 2;
 
-                iTween.MoveTo(gameObject, iTween.Hash(
-                    "y", vDestination,
-                    "delay", iTweenDelay,
-                    "easetype", easeTypeMove,
-                    "speed", 0.5f,
-                    "onstart", "SetClimbEndAnimation"
-                ));
-                while (transform.position.y != vDestination) yield return null;
-
-                iTween.MoveTo(gameObject, iTween.Hash(
-                    horizontal, hDestination,
-                    "delay", iTweenDelay,
-                    "easetype", easeTypeMove,
-                    "speed", moveSpeed,
-                    "onstart", "SetRunAnimation"
-                ));
-                if (horizontal == "x")
-                    while (transform.position.x != hDestination) yield return null;
-                else
-                    while (transform.position.z != hDestination) yield return null;
-                SetIdleAnimation();
             }
         }
+        // Si la escalada es vertical..
         else if (NodeDestination.wall)
         {
             Debug.Log("Entramos modo 222");
-            var vDestination = transform.position.y + Board.spacing;
+            float vDestination = 0;
+            if (destinationPos.y > transform.position.y)
+                vDestination = transform.position.y + Board.spacing;
+            else
+                vDestination = transform.position.y - Board.spacing;
             iTween.MoveTo(gameObject, iTween.Hash(
                 "y", vDestination,
                 "delay", iTweenDelay,
@@ -172,6 +228,7 @@ public class PlayerMover : MonoBehaviour {
             ));
             while (transform.position.y != vDestination) yield return null;
         }
+        // Si no hay nada raro, caminamos en horizontal
         else
         {
             iTween.MoveTo(gameObject, iTween.Hash(
@@ -192,7 +249,7 @@ public class PlayerMover : MonoBehaviour {
             iTween.Stop(gameObject);
             SetIdleAnimation();
             transform.position = destinationPos;
-            
+
         }
 
         isMoving = false;
