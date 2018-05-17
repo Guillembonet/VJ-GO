@@ -10,7 +10,7 @@ public class Node : MonoBehaviour {
     List<Node> m_linkedNodes = new List<Node>();
     public List<Node> LinkedNodes { get { return m_linkedNodes; } }
 
-    public Vector3 Coordinates { get { return transform.position; } }
+    public Vector3 Coordinates { get { return Utility.Vector3Round(transform.position); } }
 
     Board m_board;
 
@@ -185,7 +185,7 @@ public class Node : MonoBehaviour {
 
     public Node GetLinkedNodeInDirection(Vector3 direction)
     {
-        return m_linkedNodes.Find(n => n.Coordinates == transform.position + (direction * Board.spacing)
+        return m_linkedNodes.Find(n => n.Coordinates == Utility.Vector3Round(transform.position + (direction * Board.spacing))
                 || n.Coordinates == transform.position + (direction * (Board.spacing / 2f)) + new Vector3(0f, Board.spacing / 2f, 0f)
                 || n.Coordinates == transform.position + (direction * (Board.spacing / 2f)) - new Vector3(0f, Board.spacing / 2f, 0f));
     }
