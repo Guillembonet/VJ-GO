@@ -67,6 +67,7 @@ public class ZombieMover : MonoBehaviour
                             //zombie finds player and prepares to move in the next turn
                             m_foundPlayer = true;
                             m_nextMove = currentNode;
+                            StartCoroutine(ScreamRoutine());
                         }
                     }
                 }
@@ -199,6 +200,14 @@ public class ZombieMover : MonoBehaviour
             SetIdleAnimation();
         }
         isMoving = false;
+    }
+
+    IEnumerator ScreamRoutine()
+    {
+        Debug.Log("scream");
+        anim.SetTrigger("Scream");
+        yield return new WaitForSeconds(5f);
+        SetIdleAnimation();
     }
 
     void SetRunAnimation()
