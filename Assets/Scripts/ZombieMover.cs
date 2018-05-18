@@ -87,7 +87,7 @@ public class ZombieMover : MonoBehaviour
         var heading = lookPos - transform.position;
         
 
-        if (Utility.AreParallelToFloor(transform.position, destinationPos)) {
+        if (Utility.AreParallelToFloor(Utility.Vector3Round(transform.position), destinationPos)) {
             if (heading / heading.magnitude != transform.forward)
             {
                 iTween.LookTo(gameObject, iTween.Hash(
@@ -109,12 +109,58 @@ public class ZombieMover : MonoBehaviour
                 "speed", moveSpeed,
                 "onstart", "SetRunAnimation"
             ));
-        } else if (Utility.AreDiagonallyAligned(transform.position, destinationPos))
+        } else if (Utility.AreDiagonallyAligned(Utility.Vector3Round(transform.position), destinationPos))
         {
             if (Utility.Arg1IsHigherThanArg2(transform.position, destinationPos))
             {
                 if (m_standing) //from edge to climbing
                 {
+                    if (heading / heading.magnitude != transform.forward)
+                    {
+                        iTween.LookTo(gameObject, iTween.Hash(
+                            "looktarget", lookPos,
+                            "delay", iTweenDelay,
+                            "easetype", easeTypeRotate,
+                            "time", rotateTime
+                        ));
+
+                        yield return new WaitForSeconds(iTweenDelay + rotateTime);
+                    }
+
+                    float destinationX = 0f;
+                    float destinationZ = 0f;
+                    Utility.GetClimbDescendOffset(ref destinationX, ref destinationZ, destinationPos, transform.forward);
+
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        "x", destinationX,
+                        "z", destinationZ,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", moveSpeed,
+                        "onstart", "SetRunAnimation"
+                    ));
+
+                    while (transform.position != new Vector3(destinationX, transform.position.y, destinationZ)) yield return null;
+
+                    iTween.RotateAdd(gameObject, iTween.Hash(
+                        "y", 180f,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeRotate,
+                        "time", rotateTime
+                    ));
+                    yield return new WaitForSeconds(iTweenDelay + rotateTime);
+
+                    anim.SetFloat("Direction", -1.0f);
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        "y", destinationPos.y,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", 0.5f,
+                        "onstart", "SetClimbUpAnimation"
+                    ));
+                    while (transform.position.y != destinationPos.y) yield return null;
+                    anim.SetFloat("Direction", 1.0f);
+
                     m_standing = false;
 
                 } else //from climbing to floor
@@ -125,7 +171,6 @@ public class ZombieMover : MonoBehaviour
             {
                 if (m_standing) //from floor to climbing
                 {
-                    Debug.Log("Floor to Climb");
                     if (heading / heading.magnitude != transform.forward)
                     {
                         iTween.LookTo(gameObject, iTween.Hash(
@@ -141,7 +186,7 @@ public class ZombieMover : MonoBehaviour
                     float destinationX = 0f;
                     float destinationZ = 0f;
                     Utility.GetClimbOffset(ref destinationX, ref destinationZ, destinationPos, transform.forward);
-
+                    
                     iTween.MoveTo(gameObject, iTween.Hash(
                         "x", destinationX,
                         "z", destinationZ,
@@ -165,19 +210,39 @@ public class ZombieMover : MonoBehaviour
                 }
                 else //from climbing to edge
                 {
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        "y", destinationPos.y,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", 0.5f,
+                        "onstart", "SetClimbEndAnimation"
+                    ));
+
+                    while (transform.position.y != destinationPos.y) yield return null;
+
+                    iTween.MoveTo(gameObject, iTween.Hash(
+                        "x", destinationPos.x,
+                        "z", destinationPos.z,
+                        "delay", iTweenDelay,
+                        "easetype", easeTypeMove,
+                        "speed", moveSpeed,
+                        "onstart", "SetRunAnimation"
+                    ));
+
                     m_standing = true;
                 }
             }
-        } else if (Utility.AreVerticallyAligned(transform.position, destinationPos))
+        } else if (Utility.AreVerticallyAligned(Utility.Vector3Round(transform.position), destinationPos)) //climbing
         {
-            if (Utility.Arg1IsHigherThanArg2(transform.position, destinationPos)) //descending climb
-            {
-
-            }
-            else //ascending climb
-            {
-
-            }
+            Debug.Log("Climbing");
+            iTween.MoveTo(gameObject, iTween.Hash(
+                "y", destinationPos.y,
+                "delay", iTweenDelay,
+                "easetype", easeTypeMove,
+                "speed", 1f,
+                "onstart", "SetClimbUpAnimation"
+            ));
+            while (transform.position.y != destinationPos.y) yield return null;
         }
 
         if (m_standing)
@@ -186,11 +251,11 @@ public class ZombieMover : MonoBehaviour
             {
                 yield return null;
             }
-        }
 
-        iTween.Stop(gameObject);
-        transform.position = destinationPos;
-        if (m_standing) SetIdleAnimation();
+            iTween.Stop(gameObject);
+            transform.position = destinationPos;
+            SetIdleAnimation();
+        }
         isMoving = false;
     }
 
@@ -207,5 +272,10 @@ public class ZombieMover : MonoBehaviour
     void SetClimbUpAnimation()
     {
         anim.SetTrigger("ClimbUp");
+    }
+
+    void SetClimbEndAnimation()
+    {
+        anim.SetTrigger("ClimbEnd");
     }
 }
