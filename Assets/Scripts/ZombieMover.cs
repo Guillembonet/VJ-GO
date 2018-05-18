@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ZombieMover : MonoBehaviour
 {
@@ -8,6 +8,8 @@ public class ZombieMover : MonoBehaviour
     public bool isMoving = false;
     public iTween.EaseType easeTypeRotate = iTween.EaseType.easeInOutExpo;
     public iTween.EaseType easeTypeMove = iTween.EaseType.linear;
+
+    public UnityEvent PlayerKilledEvent;
 
     public float moveSpeed = 1.5f;
     public float rotateTime = 0.5f;
@@ -38,20 +40,34 @@ public class ZombieMover : MonoBehaviour
             {
                 if (m_nextMove != null)
                 {
-                    if (!Move(m_nextMove.Coordinates)) m_foundPlayer = false;
-                    else m_nextMove = m_board.PreviousPlayerNode;
+                    if (m_nextMove == m_board.PlayerNode)
+                    {
+                        PlayerKilledEvent.Invoke();
+                        Debug.Log("KILL");
+                    } else
+                    {
+                        if (!Move(m_nextMove.Coordinates)) m_foundPlayer = false;
+                        else m_nextMove = m_board.PreviousPlayerNode;
+                    }
                 }
             } else
             {
                 Node currentNode = m_board.FindNodeAt(transform.position).GetLinkedNodeInDirection(transform.forward);
                 if (currentNode != null)
                 {
-                    Node nextNode = currentNode.GetLinkedNodeInDirection(transform.forward);
-                    if (nextNode != null && nextNode == m_board.PlayerNode)
+                    if (currentNode == m_board.PlayerNode)
                     {
-                        //zombie finds player and prepares to move in the next turn
-                        m_foundPlayer = true;
-                        m_nextMove = currentNode;
+                        PlayerKilledEvent.Invoke();
+                        Debug.Log("KILL");
+                    } else
+                    {
+                        Node nextNode = currentNode.GetLinkedNodeInDirection(transform.forward);
+                        if (nextNode != null && nextNode == m_board.PlayerNode)
+                        {
+                            //zombie finds player and prepares to move in the next turn
+                            m_foundPlayer = true;
+                            m_nextMove = currentNode;
+                        }
                     }
                 }
             }
