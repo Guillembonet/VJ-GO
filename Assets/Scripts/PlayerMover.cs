@@ -30,7 +30,6 @@ public class PlayerMover : MonoBehaviour
     void Start()
     {
         UpdateBoard();
-
     }
 
     //true = player moved; false = player couldn't move
@@ -39,9 +38,17 @@ public class PlayerMover : MonoBehaviour
         if (m_board != null)
         {
             Node targetNode = m_board.FindNodeAt(destinationPos);
+            
             if (targetNode != null && m_board.PlayerNode.LinkedNodes.Contains(targetNode))
             {
-                StartCoroutine(MoveRoutine(destinationPos, delayTime));
+                IEnemy enemy = null;
+                if (m_board.Enemies != null)
+                {
+                    IEnemy enemyFound = m_board.Enemies.Find(e => e.CanKill() && (e.GetNode() != null && e.GetNode().Coordinates == targetNode.Coordinates));
+                    if (enemyFound != null) enemy = enemyFound;
+                }
+
+                StartCoroutine(MoveRoutine(destinationPos, delayTime, enemy));
                 
                 return true;
             }
@@ -49,7 +56,8 @@ public class PlayerMover : MonoBehaviour
         return false;
     }
 
-    IEnumerator MoveRoutine(Vector3 destinationPos, float delayTime)
+    // If enemy != null we should attack
+    IEnumerator MoveRoutine(Vector3 destinationPos, float delayTime, IEnemy enemy)
     {
         isMoving = true;
         destination = destinationPos;
@@ -337,11 +345,15 @@ public class PlayerMover : MonoBehaviour
             }
 
             iTween.Stop(gameObject);
-            SetIdleAnimation();
+            if (enemy != null)
+            {
+                enemy.Kill();
+                SetKillAnimation();
+            }
+            else SetIdleAnimation();
             transform.position = destinationPos;
 
         }
-
         isMoving = false;
         UpdateBoard();
         playerMovesEvent.Invoke();
@@ -429,9 +441,14 @@ public class PlayerMover : MonoBehaviour
         animator.SetTrigger("Die");
     }
 
+    void SetKillAnimation()
+    {
+        animator.SetTrigger("Kill");
+    }
+
     public void Kill()
     {
         SetDieAnimation();
-        playerMovesEvent.Invoke();
+        //playerMovesEvent.Invoke();
     }
 }

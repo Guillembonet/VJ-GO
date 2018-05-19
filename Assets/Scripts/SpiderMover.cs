@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class SpiderMover : MonoBehaviour
+public class SpiderMover : MonoBehaviour, IEnemy
 {
     public Vector3 destination;
     public bool isMoving = false;
@@ -43,7 +43,6 @@ public class SpiderMover : MonoBehaviour
             if (nextNode != null)
             {
                 bool shouldKill = nextNode.Coordinates == m_board.PlayerNode.Coordinates;
-                if (shouldKill) Debug.Log("I should kill u madafaka");
                 Node nextNode2  = nextNode.GetLinkedNodeInDirection(transform.forward);
                 
                 if (nextNode2 != null)
@@ -143,52 +142,25 @@ public class SpiderMover : MonoBehaviour
         anim.SetTrigger("Kill");
     }
 
-    //public void MoveLeft()
-    //{
-    //    Vector3 newPosition = transform.position + new Vector3(Board.spacing, 0f, 0f);
-    //    if (!Move(newPosition))
-    //    {
-    //        newPosition = transform.position + new Vector3(Board.spacing / 2f, -Board.spacing / 2f, 0f);
-    //        Move(newPosition);
-    //    }
+    void SetDieAnimation()
+    {
+        anim.SetTrigger("Die");
+    }
 
-    //}
+    Node IEnemy.GetNode()
+    {
+        return m_board.FindNodeAt(transform.position);
+    }
 
-    //public void MoveRight()
-    //{
-    //    Vector3 newPosition = transform.position + new Vector3(-Board.spacing, 0f, 0f);
-    //    if (!Move(newPosition))
-    //    {
-    //        newPosition = transform.position + new Vector3(-Board.spacing / 2f, Board.spacing / 2f, 0f);
-    //        Move(newPosition);
-    //    }
-    //}
+    public bool CanKill()
+    {
+        return true;
+        //throw new System.NotImplementedException();
+    }
 
-    //public void MoveForward()
-    //{
-    //    Vector3 newPosition = transform.position + new Vector3(0f, 0f, -Board.spacing);
-    //    if (!Move(newPosition))
-    //    {
-    //        newPosition = transform.position + new Vector3(0f, Board.spacing / 2f, -Board.spacing / 2f);
-    //        if (!Move(newPosition))
-    //        {
-    //            newPosition = transform.position + new Vector3(0f, Board.spacing, 0f);
-    //            Move(newPosition);
-    //        }
-    //    }
-    //}
-
-    //public void MoveBackward()
-    //{
-    //    Vector3 newPosition = transform.position + new Vector3(0f, 0f, Board.spacing);
-    //    if (!Move(newPosition))
-    //    {
-    //        newPosition = transform.position + new Vector3(0f, -Board.spacing / 2f, Board.spacing / 2f);
-    //        if (!Move(newPosition))
-    //        {
-    //            newPosition = transform.position + new Vector3(0f, -Board.spacing, 0f);
-    //            Move(newPosition);
-    //        }
-    //    }
-    //}
+    public void Kill()
+    {
+        SetDieAnimation();
+        //throw new System.NotImplementedException();
+    }
 }

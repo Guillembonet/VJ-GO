@@ -31,6 +31,9 @@ public class Board : MonoBehaviour {
     Node m_goalNode;
     public Node GoalNode { get { return m_goalNode; } }
 
+    List<IEnemy> m_enemies;
+    public List<IEnemy> Enemies { get { return m_enemies; }}
+
     public GameObject goalPrefab;
     public float drawGoalTime = 2f;
     public float drawGoalDelay = 2f;
@@ -40,6 +43,10 @@ public class Board : MonoBehaviour {
     void Awake()
     {
         m_player = Object.FindObjectOfType<PlayerMover>().GetComponent<PlayerMover>();
+
+        var spiders = Object.FindObjectsOfType<SpiderMover>();
+        m_enemies = new List<IEnemy>(spiders);
+
         GetNodeList();
 
         m_goalNode = FindGoalNode();
