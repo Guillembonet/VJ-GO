@@ -85,7 +85,7 @@ public class PlayerMover : MonoBehaviour
             {
                 if (destinationPos.y > transform.position.y)
                 {
-                    Debug.Log("Caso1");
+                    //Debug.Log("Caso1");
                     string horizontal = "";
                     float hDestination;
                     float vDestination;
@@ -123,7 +123,7 @@ public class PlayerMover : MonoBehaviour
                     while (transform.position.y != vDestination) yield return null;
                 }
                 else{
-                    Debug.Log("Caso2");
+                    //Debug.Log("Caso2");
                     string horizontal = "";
                     float hDestination;
                     float vDestination;
@@ -179,7 +179,7 @@ public class PlayerMover : MonoBehaviour
                 // Si vamos hacia arriba
                 if (destinationPos.y > transform.position.y)
                 {
-                    Debug.Log("Caso3");
+                    //Debug.Log("Caso3");
                     string horizontal = "";
                     float hDestination;
                     float vDestination;
@@ -220,7 +220,7 @@ public class PlayerMover : MonoBehaviour
                 // Si vamos hacia abajo
                 else
                 {
-                    Debug.Log("Caso4");
+                    //Debug.Log("Caso4");
                     string horizontal = "";
                     float hDestination;
                     float vDestination;
@@ -266,7 +266,7 @@ public class PlayerMover : MonoBehaviour
         {
             if(destinationPos.y != transform.position.y)
             {
-                Debug.Log("Caso5 - Escalada vertical");
+                //Debug.Log("Caso5 - Escalada vertical");
                 float vDestination = 0;
                 if (destinationPos.y > transform.position.y)
                     vDestination = transform.position.y + Board.spacing;
@@ -283,7 +283,7 @@ public class PlayerMover : MonoBehaviour
             }
             else
             {
-                Debug.Log("Secret");
+                //Debug.Log("Secret");
                 string horizontal = "";
                 float hDestination = 0;
                 // Vamos de izquierda a derecha
@@ -299,9 +299,9 @@ public class PlayerMover : MonoBehaviour
                 {
                     horizontal = "z";
                     if (transform.position.z < destinationPos.z)
-                        hDestination = transform.position.x + Board.spacing;
+                        hDestination = transform.position.z + Board.spacing;
                     else
-                        hDestination = transform.position.x - Board.spacing;
+                        hDestination = transform.position.z - Board.spacing;
                 }
 
                 iTween.MoveTo(gameObject, iTween.Hash(
@@ -320,7 +320,7 @@ public class PlayerMover : MonoBehaviour
         // Si no hay nada raro, caminamos en horizontal
         else
         {
-            Debug.Log("Caso6 - Horizontal");
+            //Debug.Log("Caso6 - Horizontal");
             iTween.MoveTo(gameObject, iTween.Hash(
                 "x", destinationPos.x,
                 "y", destinationPos.y,
