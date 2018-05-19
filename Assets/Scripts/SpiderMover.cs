@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SpiderMover : MonoBehaviour
 {
@@ -17,7 +18,9 @@ public class SpiderMover : MonoBehaviour
     Animator anim;
 
     Board m_board;
-    
+
+    public UnityEvent PlayerKilledEvent;
+
     void Awake()
     {
         m_board = Object.FindObjectOfType<Board>().GetComponent<Board>();
@@ -39,17 +42,19 @@ public class SpiderMover : MonoBehaviour
             Node nextNode = current.GetLinkedNodeInDirection(transform.forward);
             if (nextNode != null)
             {
-                //Debug.Log("Second level");
+                bool shouldKill = nextNode.Coordinates == m_board.PlayerNode.Coordinates;
+                if (shouldKill) Debug.Log("I should kill u madafaka");
                 Node nextNode2  = nextNode.GetLinkedNodeInDirection(transform.forward);
+                
                 if (nextNode2 != null)
                 {
-                    Move(nextNode.Coordinates, false);
-                    Debug.Log("Dont rotate");
+                    Move(nextNode.Coordinates, false, shouldKill);
+                    //Debug.Log("Dont rotate");
                 }
                 else
                 {
-                    Move(nextNode.Coordinates, true);
-                    Debug.Log("ROtateee");
+                    Move(nextNode.Coordinates, true, shouldKill);
+                    //Debug.Log("ROtateee");
                 }
                 
             }
@@ -58,15 +63,15 @@ public class SpiderMover : MonoBehaviour
         
     }
     
-    public void Move(Vector3 destinationPos, bool shouldRotate ,float delayTime = 0f)
+    public void Move(Vector3 destinationPos, bool shouldRotate, bool shouldKill, float delayTime = 0f)
     {
         if (m_board != null)
         { 
-            StartCoroutine(MoveRoutine(destinationPos, shouldRotate, delayTime));
+            StartCoroutine(MoveRoutine(destinationPos, shouldRotate, shouldKill, delayTime));
         }
     }
 
-    IEnumerator MoveRoutine(Vector3 destinationPos, bool shouldRotate, float delayTime)
+    IEnumerator MoveRoutine(Vector3 destinationPos, bool shouldRotate, bool shouldKill, float delayTime)
     {
         isMoving = true;
         destination = destinationPos;
@@ -102,9 +107,14 @@ public class SpiderMover : MonoBehaviour
 
         iTween.Stop(gameObject);
         transform.position = destinationPos;
-        SetIdleAnimation();
+        if (shouldKill)
+        {
+            PlayerKilledEvent.Invoke();
+            SetKillAnimation();
+        }
+        else SetIdleAnimation();
 
-        if (shouldRotate)
+        if (shouldRotate && !shouldKill)
         {
             iTween.RotateAdd(gameObject, iTween.Hash(
                 "y", 180f,
@@ -126,6 +136,11 @@ public class SpiderMover : MonoBehaviour
     void SetIdleAnimation()
     {
         anim.SetTrigger("Idle");
+    }
+
+    void SetKillAnimation()
+    {
+        anim.SetTrigger("Kill");
     }
 
     //public void MoveLeft()

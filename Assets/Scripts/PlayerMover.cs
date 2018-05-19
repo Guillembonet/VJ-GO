@@ -423,4 +423,15 @@ public class PlayerMover : MonoBehaviour
     {
         animator.SetTrigger("ClimbEnd");
     }
+
+    void SetDieAnimation()
+    {
+        animator.SetTrigger("Die");
+    }
+
+    public void Kill()
+    {
+        SetDieAnimation();
+        playerMovesEvent.Invoke();
+    }
 }
