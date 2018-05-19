@@ -84,10 +84,11 @@ public class PlayerMover : MonoBehaviour
             {
                 if (destinationPos.y > transform.position.y)
                 {
+                    Debug.Log("Caso1");
                     string horizontal = "";
                     float hDestination;
                     float vDestination;
-                    if (transform.forward == new Vector3(-1, 0, 0))
+                    if (Utility.Vector3Round(transform.forward) == new Vector3(-1, 0, 0))
                     {
                         horizontal = "x";
                         hDestination = transform.position.x - 0.7f;
@@ -121,6 +122,7 @@ public class PlayerMover : MonoBehaviour
                     while (transform.position.y != vDestination) yield return null;
                 }
                 else{
+                    Debug.Log("Caso2");
                     string horizontal = "";
                     float hDestination;
                     float vDestination;
@@ -176,10 +178,11 @@ public class PlayerMover : MonoBehaviour
                 // Si vamos hacia arriba
                 if (destinationPos.y > transform.position.y)
                 {
+                    Debug.Log("Caso3");
                     string horizontal = "";
                     float hDestination;
                     float vDestination;
-                    if (transform.forward == new Vector3(-1, 0, 0))
+                    if (Utility.Vector3Round(transform.forward) == new Vector3(-1, 0, 0))
                     {
                         horizontal = "x";
                         hDestination = transform.position.x - 1.3f;
@@ -216,6 +219,7 @@ public class PlayerMover : MonoBehaviour
                 // Si vamos hacia abajo
                 else
                 {
+                    Debug.Log("Caso4");
                     string horizontal = "";
                     float hDestination;
                     float vDestination;
@@ -259,6 +263,7 @@ public class PlayerMover : MonoBehaviour
         // Si la escalada es vertical..
         else if (NodeDestination.wall)
         {
+            Debug.Log("Caso5 - Escalada vertical");
             float vDestination = 0;
             if (destinationPos.y > transform.position.y)
                 vDestination = transform.position.y + Board.spacing;
@@ -276,6 +281,7 @@ public class PlayerMover : MonoBehaviour
         // Si no hay nada raro, caminamos en horizontal
         else
         {
+            Debug.Log("Caso6 - Horizontal");
             iTween.MoveTo(gameObject, iTween.Hash(
                 "x", destinationPos.x,
                 "y", destinationPos.y,
