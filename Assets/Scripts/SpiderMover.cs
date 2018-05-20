@@ -20,6 +20,7 @@ public class SpiderMover : MonoBehaviour, IEnemy
     Board m_board;
 
     public UnityEvent PlayerKilledEvent;
+    bool dead = false;
 
     void Awake()
     {
@@ -35,7 +36,7 @@ public class SpiderMover : MonoBehaviour, IEnemy
     public void NextMove()
     {
         //Debug.Log("GETTTTTT");
-        if (m_board != null)
+        if (m_board != null && !dead)
         {
             //Debug.Log("First level");
             Node current = m_board.FindNodeAt(transform.position);
@@ -155,12 +156,18 @@ public class SpiderMover : MonoBehaviour, IEnemy
     public bool CanKill()
     {
         return true;
-        //throw new System.NotImplementedException();
     }
 
     public void Kill()
     {
+        dead = true;
+        StartCoroutine("KillRoutine");
+    }
+
+    IEnumerator KillRoutine()
+    {
         SetDieAnimation();
-        //throw new System.NotImplementedException();
+        yield return new WaitForSeconds(2);
+        gameObject.SetActive(false);
     }
 }
