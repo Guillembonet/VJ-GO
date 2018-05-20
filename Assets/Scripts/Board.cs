@@ -46,6 +46,8 @@ public class Board : MonoBehaviour {
 
         var spiders = Object.FindObjectsOfType<SpiderMover>();
         m_enemies = new List<IEnemy>(spiders);
+        var mutants = Object.FindObjectsOfType<MutantMover>();
+        m_enemies.AddRange(mutants);
 
         GetNodeList();
 
