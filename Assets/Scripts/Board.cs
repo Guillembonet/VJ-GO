@@ -48,6 +48,8 @@ public class Board : MonoBehaviour {
         m_enemies = new List<IEnemy>(spiders);
         var mutants = Object.FindObjectsOfType<MutantMover>();
         m_enemies.AddRange(mutants);
+        var zombies = Object.FindObjectsOfType<ZombieMover>();
+        m_enemies.AddRange(zombies);
 
         GetNodeList();
 

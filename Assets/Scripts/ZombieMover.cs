@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ZombieMover : MonoBehaviour
+public class ZombieMover : MonoBehaviour, IEnemy
 {
     public Vector3 destination;
     public bool isMoving = false;
@@ -19,6 +19,7 @@ public class ZombieMover : MonoBehaviour
     Node m_nextMove;
 
     bool m_standing = true;
+    bool m_dead = false;
 
     Vector3 speed;
     Vector3 prevPos;
@@ -26,6 +27,7 @@ public class ZombieMover : MonoBehaviour
     Animator anim;
 
     Board m_board;
+
     void Awake()
     {
         m_board = Object.FindObjectOfType<Board>().GetComponent<Board>();
@@ -43,7 +45,7 @@ public class ZombieMover : MonoBehaviour
                     if (m_nextMove == m_board.PlayerNode)
                     {
                         PlayerKilledEvent.Invoke();
-                        Debug.Log("KILL");
+                        StartCoroutine(KillRoutine());
                     } else
                     {
                         if (!Move(m_nextMove.Coordinates)) m_foundPlayer = false;
@@ -58,7 +60,7 @@ public class ZombieMover : MonoBehaviour
                     if (currentNode == m_board.PlayerNode)
                     {
                         PlayerKilledEvent.Invoke();
-                        Debug.Log("KILL");
+                        StartCoroutine(KillRoutine());
                     } else
                     {
                         Node nextNode = currentNode.GetLinkedNodeInDirection(transform.forward);
@@ -206,7 +208,7 @@ public class ZombieMover : MonoBehaviour
     {
         Debug.Log("scream");
         anim.SetTrigger("Scream");
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
         SetIdleAnimation();
     }
 
@@ -296,5 +298,65 @@ public class ZombieMover : MonoBehaviour
             "speed", speed,
             "onstart", onstart
         ));
+    }
+
+    public Node GetNode()
+    {
+        return m_board.FindNodeAt(transform.position);
+    }
+
+    public void Kill()
+    {
+        m_dead = true;
+        StartCoroutine("DieRoutine");
+    }
+
+    public bool CanKill()
+    {
+        return true;
+    }
+
+    IEnumerator DieRoutine()
+    {
+        SetDieAnimation();
+        yield return new WaitForSeconds(2.5f);
+        gameObject.SetActive(false);
+    }
+
+    IEnumerator KillRoutine()
+    {
+        iTween.MoveTo(gameObject, iTween.Hash(
+            "x", transform.position.x + transform.forward.x,
+            "y", transform.position.y + transform.forward.y,
+            "z", transform.position.z + transform.forward.z,
+            "delay", iTweenDelay,
+            "easetype", easeTypeMove,
+            "time", 0.5f
+        ));
+        SetKillAnimation();
+        yield return new WaitForSeconds(2f);
+        SetIdleAnimation();
+        yield return new WaitForSeconds(1f);
+        iTween.MoveTo(gameObject, iTween.Hash(
+            "x", transform.position.x + transform.forward.x,
+            "y", transform.position.y + transform.forward.y,
+            "z", transform.position.z + transform.forward.z,
+            "delay", iTweenDelay,
+            "easetype", easeTypeMove,
+            "speed", moveSpeed,
+            "onstart", "SetRunAnimation",
+            "oncomplete", "SetIdleAnimation"
+        ));
+        SetIdleAnimation();
+    }
+
+    void SetKillAnimation()
+    {
+        anim.SetTrigger("Kill");
+    }
+
+    void SetDieAnimation()
+    {
+        anim.SetTrigger("Die");
     }
 }
