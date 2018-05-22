@@ -18,7 +18,7 @@ public class PlayerManager : MonoBehaviour {
 
 	void Update ()
     {
-		if (playerMover.isMoving)
+		if (playerMover.isMoving || playerMover.Board.Enemies.Exists(e => e.isMoving()))
         {
             return;
         }

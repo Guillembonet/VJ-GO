@@ -44,11 +44,10 @@ public class ZombieMover : MonoBehaviour, IEnemy
                 {
                     if (m_nextMove == m_board.PlayerNode)
                     {
-                        PlayerKilledEvent.Invoke();
-                        StartCoroutine(KillRoutine());
+                        Move(m_nextMove.Coordinates, true);
                     } else
                     {
-                        if (!Move(m_nextMove.Coordinates)) m_foundPlayer = false;
+                        if (!Move(m_nextMove.Coordinates, false)) m_foundPlayer = false;
                         else m_nextMove = m_board.PreviousPlayerNode;
                     }
                 }
@@ -59,8 +58,7 @@ public class ZombieMover : MonoBehaviour, IEnemy
                 {
                     if (currentNode == m_board.PlayerNode)
                     {
-                        PlayerKilledEvent.Invoke();
-                        StartCoroutine(KillRoutine());
+                        Move(currentNode.Coordinates, true);
                     } else
                     {
                         Node nextNode = currentNode.GetLinkedNodeInDirection(transform.forward);
@@ -81,7 +79,7 @@ public class ZombieMover : MonoBehaviour, IEnemy
     }
 
     //true = player moved; false = player couldn't move
-    public bool Move(Vector3 destinationPos, float delayTime = 0f)
+    public bool Move(Vector3 destinationPos, bool kill, float delayTime = 0f)
     {
         if (m_board != null)
         {
@@ -89,14 +87,14 @@ public class ZombieMover : MonoBehaviour, IEnemy
             Node zombieNode = m_board.FindZombieNode(this);
             if (targetNode != null && zombieNode != null && zombieNode.LinkedNodes.Contains(targetNode))
             {
-                StartCoroutine(MoveRoutine(destinationPos, delayTime));
+                StartCoroutine(MoveRoutine(destinationPos, delayTime, kill));
                 return true;
             }
         }
         return false;
     }
 
-    IEnumerator MoveRoutine(Vector3 destinationPos, float delayTime)
+    IEnumerator MoveRoutine(Vector3 destinationPos, float delayTime, bool kill)
     {
         isMoving = true;
         destination = destinationPos;
@@ -109,8 +107,20 @@ public class ZombieMover : MonoBehaviour, IEnemy
         if (Utility.AreParallelToFloor(Utility.Vector3Round(transform.position), destinationPos)) {
             if (m_standing) //Normal run
             {
-                yield return new WaitForSeconds(LookTo(heading, transform.forward, lookPos));
-                RunToXYZ(destinationPos);
+                if (kill)
+                {
+                    RunToXYZ(Utility.Vector3Round(transform.position+transform.forward));
+                    yield return new WaitForSeconds(0.7f);
+                    StartCoroutine(SetKillAnimation());
+                    yield return new WaitForSeconds(1f);
+                    SetIdleAnimation();
+                    yield return new WaitForSeconds(2f);
+                    RunToXYZ(destinationPos);
+                } else
+                {
+                    yield return new WaitForSeconds(LookTo(heading, transform.forward, lookPos));
+                    RunToXYZ(destinationPos);
+                }
             } else //sideways wall moving
             {
                 //TODO
@@ -206,7 +216,6 @@ public class ZombieMover : MonoBehaviour, IEnemy
 
     IEnumerator ScreamRoutine()
     {
-        Debug.Log("scream");
         anim.SetTrigger("Scream");
         yield return new WaitForSeconds(3f);
         SetIdleAnimation();
@@ -323,40 +332,21 @@ public class ZombieMover : MonoBehaviour, IEnemy
         gameObject.SetActive(false);
     }
 
-    IEnumerator KillRoutine()
+    IEnumerator SetKillAnimation()
     {
-        iTween.MoveTo(gameObject, iTween.Hash(
-            "x", transform.position.x + transform.forward.x,
-            "y", transform.position.y + transform.forward.y,
-            "z", transform.position.z + transform.forward.z,
-            "delay", iTweenDelay,
-            "easetype", easeTypeMove,
-            "time", 0.5f
-        ));
-        SetKillAnimation();
-        yield return new WaitForSeconds(2f);
         SetIdleAnimation();
-        yield return new WaitForSeconds(1f);
-        iTween.MoveTo(gameObject, iTween.Hash(
-            "x", transform.position.x + transform.forward.x,
-            "y", transform.position.y + transform.forward.y,
-            "z", transform.position.z + transform.forward.z,
-            "delay", iTweenDelay,
-            "easetype", easeTypeMove,
-            "speed", moveSpeed,
-            "onstart", "SetRunAnimation",
-            "oncomplete", "SetIdleAnimation"
-        ));
-        SetIdleAnimation();
-    }
-
-    void SetKillAnimation()
-    {
         anim.SetTrigger("Kill");
+        yield return new WaitForSeconds(1f);
+        PlayerKilledEvent.Invoke();
     }
 
     void SetDieAnimation()
     {
         anim.SetTrigger("Die");
+    }
+
+    bool IEnemy.isMoving()
+    {
+        return isMoving;
     }
 }

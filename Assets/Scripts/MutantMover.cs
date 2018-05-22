@@ -138,4 +138,9 @@ public class MutantMover : MonoBehaviour, IEnemy
         yield return new WaitForSeconds(2);
         gameObject.SetActive(false);
     }
+
+    bool IEnemy.isMoving()
+    {
+        return isMoving;
+    }
 }
