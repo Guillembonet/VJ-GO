@@ -177,7 +177,14 @@ public class ZombieMover : MonoBehaviour, IEnemy
 
                     RunToXZ(destinationX, destinationZ);
                     while (transform.position != new Vector3(destinationX, transform.position.y, destinationZ)) yield return null; //wait for run to end
-
+                    if (kill)
+                    {
+                        SetIdleAnimation();
+                        StartCoroutine(SetKillAnimation());
+                        yield return new WaitForSeconds(1f);
+                        SetIdleAnimation();
+                        yield return new WaitForSeconds(2f);
+                    }
                     ClimbUp(destinationPos.y);
 
                     m_standing = false;
@@ -188,6 +195,15 @@ public class ZombieMover : MonoBehaviour, IEnemy
                     ClimbUp(destinationPos.y, onstart: "SetClimbEndAnimation");
 
                     while (transform.position.y != destinationPos.y) yield return null; //wait for climb to end
+
+                    if (kill)
+                    {
+                        SetIdleAnimation();
+                        StartCoroutine(SetKillAnimation());
+                        yield return new WaitForSeconds(1f);
+                        SetIdleAnimation();
+                        yield return new WaitForSeconds(2f);
+                    }
 
                     RunToXZ(destinationPos.x, destinationPos.z);
 
