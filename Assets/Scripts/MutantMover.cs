@@ -137,5 +137,7 @@ public class MutantMover : MonoBehaviour, IEnemy
         SetDieAnimation();
         yield return new WaitForSeconds(2);
         gameObject.SetActive(false);
+
+        m_board.Enemies.RemoveAll((e) => e.GetNode().Coordinates == Utility.Vector3Round(transform.position));
     }
 }
