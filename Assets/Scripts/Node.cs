@@ -57,7 +57,6 @@ public class Node : MonoBehaviour {
         m_neighborNodes.Clear();
         m_linkedNodes.Clear();
         List<Link> links = new List<Link>(GetComponentsInChildren<Link>());
-        Debug.Log(links.Count);
         foreach(Link l in links)
         {
             Destroy(l.linkObject);
