@@ -414,6 +414,7 @@ public class PlayerMover : MonoBehaviour
         if (m_board != null)
         {
             m_board.UpdatePlayerNode();
+            m_board.CheckButtons();
         }
     }
 

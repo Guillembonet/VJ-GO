@@ -41,6 +41,12 @@ public class Node : MonoBehaviour {
         }
 	}
 
+    public void StartNode()
+    {
+        if (m_board != null) m_neighborNodes = FindNeighbors(m_board.allNodes);
+        InitNode();
+    }
+
     public void ShowGeometry()
     {
         if (geometry != null)
