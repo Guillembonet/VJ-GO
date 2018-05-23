@@ -23,21 +23,25 @@ public class Platform : MonoBehaviour, ActivatedObject {
     {
         if (transform.position == m_originalPos)
         {
+            m_node.RemoveNeighbors();
             iTween.MoveTo(gameObject, iTween.Hash(
                 "y", m_originalPos.y + Board.spacing * 2f,
                 "easetype", iTween.EaseType.easeOutBack,
                 "time", 1.0f
             ));
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.1f);
             m_node.StartNode();
         }
         else
         {
+            m_node.RemoveNeighbors();
             iTween.MoveTo(gameObject, iTween.Hash(
                 "y", m_originalPos.y,
                 "easetype", iTween.EaseType.easeOutBack,
                 "time", 1.0f
             ));
+            yield return new WaitForSeconds(1.1f); 
+            m_node.StartNode();
         }
     }
 }

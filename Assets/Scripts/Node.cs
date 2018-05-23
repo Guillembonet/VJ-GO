@@ -44,7 +44,24 @@ public class Node : MonoBehaviour {
     public void StartNode()
     {
         if (m_board != null) m_neighborNodes = FindNeighbors(m_board.allNodes);
-        InitNode();
+        InitNode(true);
+    }
+
+    public void RemoveNeighbors()
+    {
+        foreach(Node n in m_neighborNodes)
+        {
+            n.NeighborNodes.Remove(this);
+            n.LinkedNodes.Remove(this);
+        }
+        m_neighborNodes.Clear();
+        m_linkedNodes.Clear();
+        List<Link> links = new List<Link>(GetComponentsInChildren<Link>());
+        Debug.Log(links.Count);
+        foreach(Link l in links)
+        {
+            Destroy(l.linkObject);
+        }
     }
 
     public void ShowGeometry()
@@ -71,9 +88,9 @@ public class Node : MonoBehaviour {
         return nList;
     }
 
-    public void InitNode()
+    public void InitNode(bool reinitialize = false)
     {
-        if (!m_isInitialized)
+        if (!m_isInitialized || reinitialize)
         {
             ShowGeometry();
             InitNeighbors();
