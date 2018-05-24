@@ -28,6 +28,7 @@ public class Node : MonoBehaviour {
 
     public bool isLevelGoal = false;
     public bool wall = false;
+    public bool isGross = false;
     private void Awake()
     {
         m_board = GameObject.FindObjectOfType<Board>();
@@ -169,7 +170,10 @@ public class Node : MonoBehaviour {
                 Link link = linkInstance.GetComponent<Link>();
                 if (link != null)
                 {
-                    link.DrawLink(transform.position, targetNode.transform.position);
+                    if(isGross && targetNode.isGross)
+                        link.DrawGrossLink(transform.position, targetNode.transform.position);
+                    else
+                        link.DrawLink(transform.position, targetNode.transform.position);
                 }
             }
 

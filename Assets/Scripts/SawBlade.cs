@@ -41,7 +41,7 @@ public class SawBlade : MonoBehaviour {
                 bool shouldKill = nextNode.Coordinates == m_board.PlayerNode.Coordinates;
                 Node nextNode2 = nextNode.GetLinkedNodeInPlainDirection(transform.forward);
 
-                if (nextNode2 != null)
+                if (nextNode2 != null && !nextNode.isGross)
                 {
                     Move(nextNode.Coordinates, false, shouldKill);
                 }
