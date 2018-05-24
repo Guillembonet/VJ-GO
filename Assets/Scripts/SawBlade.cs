@@ -35,18 +35,23 @@ public class SawBlade : MonoBehaviour {
         {
             //Debug.Log("First level");
             Node current = m_board.FindNodeAt(transform.position);
+
+            /* Check if player come to us */
+            if (current.Coordinates == m_board.PlayerNode.Coordinates) PlayerKilledEvent.Invoke();
+
             Node nextNode = current.GetLinkedNodeInDirection(transform.forward);
             if (nextNode != null)
             {
                 bool shouldKill = nextNode.Coordinates == m_board.PlayerNode.Coordinates;
                 Node nextNode2 = nextNode.GetLinkedNodeInPlainDirection(transform.forward);
 
-                if (nextNode2 != null && !nextNode.isGross)
+                if (nextNode2 != null || !nextNode.isGross)
                 {
                     Move(nextNode.Coordinates, false, shouldKill);
                 }
                 else
                 {
+                    Debug.Log("ROTAA");
                     Move(nextNode.Coordinates, true, shouldKill);
                 }
 
@@ -87,19 +92,12 @@ public class SawBlade : MonoBehaviour {
         if (shouldKill)
         {
             PlayerKilledEvent.Invoke();
-            //SetKillAnimation();
         }
-        //else SetIdleAnimation();
+
+        KillEnemies();
 
         if (shouldRotate && !shouldKill)
         {
-            //iTween.RotateAdd(gameObject, iTween.Hash(
-            //    "y", 180f,
-            //    "easetype", easeType,
-            //    "delay", delayTime,
-            //    "time", rotateTime
-            //));
-            //yield return new WaitForSeconds(rotateTime);
 
             iTween.MoveAdd(gameObject, iTween.Hash(
                 "y", -1f,
@@ -129,46 +127,12 @@ public class SawBlade : MonoBehaviour {
         isMoving = false;
     }
 
-    IEnumerator move()
+    void KillEnemies()
     {
-        yield return new WaitForSeconds(2);
-        iTween.MoveTo(gameObject, iTween.Hash(
-            "z", 2f,
-            "delay", 0f,
-            "speed", 4f,
-            "easetype", iTween.EaseType.linear
-        ));
-        yield return new WaitForSeconds(2);
-
-        iTween.MoveAdd(gameObject, iTween.Hash(
-            "y", -1f,
-            "delay", 0f,
-            "time", 0.1f,
-            "easetype", iTween.EaseType.linear
-        ));
-        yield return new WaitForSeconds(0.1f);
-
-        iTween.RotateAdd(gameObject, iTween.Hash(
-            "y", 180f,
-            "delay", 0f,
-            "time", 0.1f,
-            "easetype", iTween.EaseType.linear
-        ));
-        yield return new WaitForSeconds(0.1f);
-
-        iTween.MoveAdd(gameObject, iTween.Hash(
-            "y", 1f,
-            "delay", 0f,
-            "time", 0.1f,
-            "easetype", iTween.EaseType.easeInOutExpo
-        ));
-        yield return new WaitForSeconds(2);
-
-        iTween.MoveTo(gameObject, iTween.Hash(
-            "z", 0f,
-            "delay", 0f,
-            "speed", 4f,
-            "easetype", iTween.EaseType.linear
-        ));
+        foreach (var enemy in m_board.Enemies)
+        {
+            if (enemy.GetNode().Coordinates == Utility.Vector3Round(transform.position))
+                enemy.Kill();
+        }
     }
 }
