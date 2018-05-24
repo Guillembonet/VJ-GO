@@ -9,9 +9,11 @@ public class Link : MonoBehaviour {
     public iTween.EaseType easeType = iTween.EaseType.easeInOutExpo;
     public iTween.EaseType easeTypeIn = iTween.EaseType.easeInExpo;
     public iTween.EaseType easeTypeOut = iTween.EaseType.easeOutExpo;
+    public GameObject linkObject;
 
     public void DrawLink(Vector3 startPos, Vector3 endPos)
     {
+        linkObject = gameObject;
         transform.localScale = new Vector3(lineThickness, 1f, 0f);
         Vector3 dirVector = endPos - startPos;
         //dirVector = new Vector3(dirVector.x, dirVector.y, dirVector.z - 0.2f);
@@ -32,6 +34,7 @@ public class Link : MonoBehaviour {
 
     public void DrawLinktoWall(Vector3 startPos, Vector3 endPos)
     {
+        linkObject = gameObject;
         transform.localScale = new Vector3(lineThickness, 1f, 0f);
         Vector3 dirVector = endPos - startPos;
         float zScale = dirVector.magnitude - borderWidth;
@@ -51,6 +54,7 @@ public class Link : MonoBehaviour {
 
     public void DrawLinkfromWall(Vector3 startPos, Vector3 endPos)
     {
+        linkObject = gameObject;
         transform.localScale = new Vector3(lineThickness, 1f, 0f);
         Vector3 dirVector = endPos - startPos;
         float zScale = dirVector.magnitude - borderWidth;

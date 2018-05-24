@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IEnemy {
+public interface ActivatedObject {
 
     // Use this for initialization
-    bool isMoving();
-    Node GetNode();
-    void Kill();
-    bool CanKill(); 
+    void Activate();
 }

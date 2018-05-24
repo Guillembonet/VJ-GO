@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,6 +22,8 @@ public class Board : MonoBehaviour {
     List<Node> m_allNodes = new List<Node>();
     public List<Node> allNodes { get { return m_allNodes; } }
 
+    List<Button> m_allButtons = new List<Button>();
+
     Node m_playerNode;
     public Node PlayerNode { get { return m_playerNode; } }
 
@@ -42,16 +44,17 @@ public class Board : MonoBehaviour {
     PlayerMover m_player;
     void Awake()
     {
-        m_player = Object.FindObjectOfType<PlayerMover>().GetComponent<PlayerMover>();
+        m_player = UnityEngine.Object.FindObjectOfType<PlayerMover>().GetComponent<PlayerMover>();
 
-        var spiders = Object.FindObjectsOfType<SpiderMover>();
+        var spiders = UnityEngine.Object.FindObjectsOfType<SpiderMover>();
         m_enemies = new List<IEnemy>(spiders);
-        var mutants = Object.FindObjectsOfType<MutantMover>();
+        var mutants = UnityEngine.Object.FindObjectsOfType<MutantMover>();
         m_enemies.AddRange(mutants);
-        var zombies = Object.FindObjectsOfType<ZombieMover>();
+        var zombies = UnityEngine.Object.FindObjectsOfType<ZombieMover>();
         m_enemies.AddRange(zombies);
 
         GetNodeList();
+        GetButtonList();
 
         m_goalNode = FindGoalNode();
     }
@@ -60,6 +63,12 @@ public class Board : MonoBehaviour {
     {
         Node[] nList = GameObject.FindObjectsOfType<Node>();
         m_allNodes = new List<Node>(nList);
+    }
+
+    public void GetButtonList()
+    {
+        Button[] nButtons = GameObject.FindObjectsOfType<Button>();
+        m_allButtons = new List<Button>(nButtons);
     }
 
     public Node FindNodeAt(Vector3 pos)
@@ -126,6 +135,14 @@ public class Board : MonoBehaviour {
         if (m_playerNode != null)
         {
             m_playerNode.InitNode();
+        }
+    }
+
+    internal void CheckButtons()
+    {
+        foreach(Button b in m_allButtons)
+        {
+            b.CheckButton();
         }
     }
 }

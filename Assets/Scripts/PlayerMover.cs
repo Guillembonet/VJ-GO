@@ -18,6 +18,7 @@ public class PlayerMover : MonoBehaviour
     public UnityEvent playerMovesEvent;
 
     Board m_board;
+    public Board Board { get { return m_board; } }
 
     Animator animator;
 
@@ -413,6 +414,7 @@ public class PlayerMover : MonoBehaviour
         if (m_board != null)
         {
             m_board.UpdatePlayerNode();
+            m_board.CheckButtons();
         }
     }
 

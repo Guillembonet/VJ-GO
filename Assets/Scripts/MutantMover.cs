@@ -140,4 +140,9 @@ public class MutantMover : MonoBehaviour, IEnemy
 
         m_board.Enemies.RemoveAll((e) => e.GetNode().Coordinates == Utility.Vector3Round(transform.position));
     }
+
+    bool IEnemy.isMoving()
+    {
+        return isMoving;
+    }
 }
