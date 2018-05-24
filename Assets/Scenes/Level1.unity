@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4473831, g: 0.49732137, b: 0.5752533, a: 1}
+  m_IndirectSpecularColor: {r: 0.447383, g: 0.49732107, b: 0.5752523, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -782,6 +782,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 168499567}
+  - component: {fileID: 168499569}
   m_Layer: 0
   m_Name: SawBlade
   m_TagString: Untagged
@@ -795,14 +796,25 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 168499566}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 2, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 333580752}
   m_Father: {fileID: 0}
   m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &168499569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 168499566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1c6035dce1387147a62a396d708306a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &170076733
 GameObject:
   m_ObjectHideFlags: 0
@@ -1307,6 +1319,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 317dea78c1d0e8442bd9ce1b49796076, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &426143409 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114225739990655694, guid: 9c2c6ef86dafd2745b0fd84cd7bf01af,
+    type: 2}
+  m_PrefabInternal: {fileID: 1918126377}
+  m_Script: {fileID: 11500000, guid: 292596f38d4e732439a87395c9477bfe, type: 3}
 --- !u!1001 &431801650
 Prefab:
   m_ObjectHideFlags: 0
@@ -1332,7 +1350,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e6dda3695af18a948b2a08f0818388e3, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e6dda3695af18a948b2a08f0818388e3, type: 3}
       propertyPath: m_LocalRotation.z
@@ -1340,7 +1358,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e6dda3695af18a948b2a08f0818388e3, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e6dda3695af18a948b2a08f0818388e3, type: 3}
       propertyPath: m_RootOrder
@@ -1366,15 +1384,13 @@ Prefab:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 06845f01ee528ae48b55cf2a890da027, type: 2}
+    - target: {fileID: 400000, guid: e6dda3695af18a948b2a08f0818388e3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e6dda3695af18a948b2a08f0818388e3, type: 3}
   m_IsPrefabParent: 0
---- !u!114 &426143409 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114225739990655694, guid: 9c2c6ef86dafd2745b0fd84cd7bf01af,
-    type: 2}
-  m_PrefabInternal: {fileID: 1918126377}
-  m_Script: {fileID: 11500000, guid: 292596f38d4e732439a87395c9477bfe, type: 3}
 --- !u!1001 &442334830
 Prefab:
   m_ObjectHideFlags: 0
@@ -2873,7 +2889,7 @@ Transform:
   m_Children:
   - {fileID: 793489671}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &1166762385
 MonoBehaviour:
