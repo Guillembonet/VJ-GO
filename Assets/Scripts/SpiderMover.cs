@@ -13,8 +13,6 @@ public class SpiderMover : MonoBehaviour, IEnemy
     public float rotateTime = 0.5f;
     public float iTweenDelay = 0f;
 
-    Vector3 speed;
-
     Animator anim;
 
     Board m_board;
@@ -27,12 +25,7 @@ public class SpiderMover : MonoBehaviour, IEnemy
         m_board = Object.FindObjectOfType<Board>().GetComponent<Board>();
         anim = GetComponentInChildren<Animator>();
     }
-
-    void Start()
-    {
-        //StartCoroutine(CalcVelocity());
-    }
-
+    
     public void NextMove()
     {
         //Debug.Log("GETTTTTT");
@@ -44,8 +37,8 @@ public class SpiderMover : MonoBehaviour, IEnemy
             if (nextNode != null)
             {
                 bool shouldKill = nextNode.Coordinates == m_board.PlayerNode.Coordinates;
-                Node nextNode2  = nextNode.GetLinkedNodeInDirection(transform.forward);
-                
+                Node nextNode2  = nextNode.GetLinkedNodeInPlainDirection(transform.forward);
+
                 if (nextNode2 != null)
                 {
                     Move(nextNode.Coordinates, false, shouldKill);
@@ -76,19 +69,6 @@ public class SpiderMover : MonoBehaviour, IEnemy
         isMoving = true;
         destination = destinationPos;
         yield return new WaitForSeconds(delayTime);
-
-        //var heading = destinationPos - transform.position;
-        //if (heading/heading.magnitude != transform.forward)
-        //{
-        //    iTween.LookTo(gameObject, iTween.Hash(
-        //        "looktarget", destinationPos,
-        //        "delay", iTweenDelay,
-        //        "easetype", easeType,
-        //        "time", rotateTime
-        //    ));
-
-        //    yield return new WaitForSeconds(0.5f);
-        //}
 
         iTween.MoveTo(gameObject, iTween.Hash(
             "x", destinationPos.x,
