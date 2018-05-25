@@ -453,4 +453,20 @@ public class PlayerMover : MonoBehaviour
         SetDieAnimation();
         //playerMovesEvent.Invoke();
     }
+
+    public void FallAndDie()
+    {
+        StartCoroutine(FallAndDieRoutine());
+    }
+
+    IEnumerator FallAndDieRoutine()
+    {
+        iTween.MoveAdd(gameObject, iTween.Hash(
+            "y", -2f,
+            "easetype", iTween.EaseType.easeInOutElastic,
+            "time", 1f
+        ));
+
+        yield return new WaitForSeconds(1);
+    }
 }
