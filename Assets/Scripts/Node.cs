@@ -48,7 +48,7 @@ public class Node : MonoBehaviour {
         InitNode(true);
     }
 
-    public void RemoveNeighbors()
+    public void RemoveNeighbors(bool removeLinks = true)
     {
         foreach(Node n in m_neighborNodes)
         {
@@ -58,9 +58,12 @@ public class Node : MonoBehaviour {
         m_neighborNodes.Clear();
         m_linkedNodes.Clear();
         List<Link> links = new List<Link>(GetComponentsInChildren<Link>());
-        foreach(Link l in links)
+        if (removeLinks)
         {
-            Destroy(l.linkObject);
+            foreach (Link l in links)
+            {
+                Destroy(l.linkObject);
+            }
         }
     }
 

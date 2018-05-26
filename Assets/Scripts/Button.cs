@@ -7,7 +7,7 @@ public class Button : MonoBehaviour {
     Board m_board;
     bool m_activated = false;
     public Platform targetPlatform;
-    public Platform targetBlock;
+    public SkyBlock targetBlock;
 
     // Use this for initialization
     void Start () {
@@ -21,6 +21,10 @@ public class Button : MonoBehaviour {
             if (targetPlatform != null)
             {
                 targetPlatform.Activate();
+            }
+            if (targetBlock != null)
+            {
+                targetBlock.Activate();
             }
         }
     }
