@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4473831, g: 0.49732137, b: 0.5752533, a: 1}
+  m_IndirectSpecularColor: {r: 0.447383, g: 0.49732107, b: 0.5752523, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -805,7 +805,7 @@ Transform:
   m_LocalPosition: {x: 2, y: 0, z: -2}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
-  - {fileID: 431801651}
+  - {fileID: 333580752}
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1050,21 +1050,6 @@ Transform:
   m_PrefabParentObject: {fileID: 4273952189734918, guid: 687907c4b92733848b678498db4ec342,
     type: 2}
   m_PrefabInternal: {fileID: 392963498}
---- !u!1 &201161173
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 431801650}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 333580752}
-  m_Layer: 0
-  m_Name: Missing Prefab (Dummy)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!4 &202240745 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4273952189734918, guid: 687907c4b92733848b678498db4ec342,
@@ -1199,6 +1184,7 @@ GameObject:
   - component: {fileID: 282840814}
   - component: {fileID: 282840813}
   - component: {fileID: 282840811}
+  - component: {fileID: 282840812}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1213,6 +1199,18 @@ AudioListener:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 282840810}
   m_Enabled: 1
+--- !u!114 &282840812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 282840810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7ccee454cd5ccc449aa9dcf82399418, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 675095841}
 --- !u!20 &282840813
 Camera:
   m_ObjectHideFlags: 0
@@ -1444,19 +1442,10 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 687907c4b92733848b678498db4ec342, type: 2}
   m_IsPrefabParent: 0
---- !u!4 &333580752
+--- !u!4 &333580752 stripped
 Transform:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400000, guid: e6dda3695af18a948b2a08f0818388e3, type: 3}
   m_PrefabInternal: {fileID: 431801650}
-  m_GameObject: {fileID: 201161173}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 431801651}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &354094247
 Prefab:
   m_ObjectHideFlags: 0
@@ -1717,20 +1706,6 @@ Prefab:
     - {fileID: 9500000, guid: e6dda3695af18a948b2a08f0818388e3, type: 3}
   m_ParentPrefab: {fileID: 100100000, guid: e6dda3695af18a948b2a08f0818388e3, type: 3}
   m_IsPrefabParent: 0
---- !u!4 &431801651
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 431801650}
-  m_GameObject: {fileID: 1054016007}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 333580752}
-  m_Father: {fileID: 168499567}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &442334830
 Prefab:
   m_ObjectHideFlags: 0
@@ -2972,21 +2947,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 687907c4b92733848b678498db4ec342, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &1054016007
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 431801650}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 431801651}
-  m_Layer: 0
-  m_Name: Missing Prefab
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!4 &1078053245 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4273952189734918, guid: 687907c4b92733848b678498db4ec342,
