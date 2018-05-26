@@ -373,6 +373,7 @@ public class ZombieMover : MonoBehaviour, IEnemy
 
     IEnumerator FallAndKillRoutine()
     {
+        m_board.Enemies.RemoveAll((e) => e.GetNode().Coordinates == Utility.Vector3Round(transform.position));
         iTween.MoveAdd(gameObject, iTween.Hash(
             "y", -2f,
             "easetype", iTween.EaseType.easeInOutElastic,
@@ -380,5 +381,7 @@ public class ZombieMover : MonoBehaviour, IEnemy
         ));
 
         yield return new WaitForSeconds(1);
+
+        gameObject.SetActive(false);
     }
 }
