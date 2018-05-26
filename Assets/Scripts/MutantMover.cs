@@ -20,6 +20,7 @@ public class MutantMover : MonoBehaviour, IEnemy
     Board m_board;
 
     public UnityEvent PlayerKilledEvent;
+    public UnityEvent MutantMovesEvent;
     bool m_dead = false;
 
     void Awake()
@@ -94,6 +95,7 @@ public class MutantMover : MonoBehaviour, IEnemy
         PlayerKilledEvent.Invoke();
 
         isMoving = false;
+        MutantMovesEvent.Invoke();
     }
 
     void SetWalkAnimation()
@@ -144,5 +146,21 @@ public class MutantMover : MonoBehaviour, IEnemy
     bool IEnemy.isMoving()
     {
         return isMoving;
+    }
+
+    public void FallAndKill()
+    {
+        StartCoroutine(FallAndKillRoutine());
+    }
+
+    IEnumerator FallAndKillRoutine()
+    {
+        iTween.MoveAdd(gameObject, iTween.Hash(
+            "y", -2f,
+            "easetype", iTween.EaseType.easeInOutElastic,
+            "time", 1f
+        ));
+
+        yield return new WaitForSeconds(1);
     }
 }

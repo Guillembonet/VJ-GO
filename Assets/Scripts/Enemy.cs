@@ -8,5 +8,6 @@ public interface IEnemy {
     bool isMoving();
     Node GetNode();
     void Kill();
+    void FallAndKill();
     bool CanKill(); 
 }

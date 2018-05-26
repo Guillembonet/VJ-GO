@@ -365,4 +365,20 @@ public class ZombieMover : MonoBehaviour, IEnemy
     {
         return isMoving;
     }
+
+    public void FallAndKill()
+    {
+        StartCoroutine(FallAndKillRoutine());
+    }
+
+    IEnumerator FallAndKillRoutine()
+    {
+        iTween.MoveAdd(gameObject, iTween.Hash(
+            "y", -2f,
+            "easetype", iTween.EaseType.easeInOutElastic,
+            "time", 1f
+        ));
+
+        yield return new WaitForSeconds(1);
+    }
 }

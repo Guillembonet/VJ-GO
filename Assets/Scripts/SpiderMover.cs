@@ -18,6 +18,7 @@ public class SpiderMover : MonoBehaviour, IEnemy
     Board m_board;
 
     public UnityEvent PlayerKilledEvent;
+    public UnityEvent SpiderMovesEvent;
     bool dead = false;
 
     void Awake()
@@ -106,6 +107,7 @@ public class SpiderMover : MonoBehaviour, IEnemy
         }
         
         isMoving = false;
+        SpiderMovesEvent.Invoke();
     }
 
     void SetWalkAnimation()
@@ -156,5 +158,21 @@ public class SpiderMover : MonoBehaviour, IEnemy
     bool IEnemy.isMoving()
     {
         return isMoving;
+    }
+
+    public void FallAndKill()
+    {
+        StartCoroutine(FallAndKillRoutine());
+    }
+
+    IEnumerator FallAndKillRoutine()
+    {
+        iTween.MoveAdd(gameObject, iTween.Hash(
+            "y", -2f,
+            "easetype", iTween.EaseType.easeInOutElastic,
+            "time", 1f
+        ));
+
+        yield return new WaitForSeconds(1);
     }
 }

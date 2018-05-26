@@ -17,6 +17,8 @@ public class Crack : MonoBehaviour {
 
     public UnityEvent PlayerKilledEvent;
 
+    bool m_occupied = false;
+
     void Awake()
     {
         actualState = state.fase1;
@@ -29,10 +31,26 @@ public class Crack : MonoBehaviour {
         m_board = Object.FindObjectOfType<Board>().GetComponent<Board>();
     }
     
+    bool HasThePlayerSteppedOnMe()
+    {
+        return m_board.PlayerNode.Coordinates == Utility.Vector3Round(transform.position);
+    }
+
+    bool HasSomeEnemySteppedOnMe()
+    {
+        return m_board.Enemies.Find(e => e.GetNode().Coordinates == Utility.Vector3Round(transform.position)) != null;
+    }
+
+    bool HasSomeoneSteppedOnMe()
+    {
+        return HasThePlayerSteppedOnMe() || HasSomeEnemySteppedOnMe();
+    }
+
     public void Footle()
     {
-        if(m_board.PlayerNode.Coordinates == Utility.Vector3Round(transform.position))
+        if(HasSomeoneSteppedOnMe() && !m_occupied)
         {
+            m_occupied = true;
             if (actualState == state.fase1)
             {
                 HandleState1();
@@ -46,6 +64,8 @@ public class Crack : MonoBehaviour {
                 HandleState3();
             }
         }
+
+        if (!HasSomeoneSteppedOnMe()) m_occupied = false;
     }
 
     void HandleState1()
@@ -63,20 +83,23 @@ public class Crack : MonoBehaviour {
             "easetype", iTween.EaseType.easeInOutElastic,
             "delay", 0f
         ));
-        while (m_fase3.transform.localScale != new Vector3(4, 4, 4)) yield return null;
+        yield return new WaitForSeconds(1f);
 
         actualState = state.fase3;
 
-        if(m_board.PlayerNode.Coordinates == Utility.Vector3Round(transform.position))
-        {
-            PlayerKilledEvent.Invoke();
-            Debug.Log("Polee");
-        }
+        HandleState3();
     }
 
     void HandleState3()
     {
-        PlayerKilledEvent.Invoke();
-        Debug.Log("Polee2");
+        if (HasThePlayerSteppedOnMe())
+        {
+            PlayerKilledEvent.Invoke();
+        }
+        if (HasSomeEnemySteppedOnMe())
+        {
+            var enemy = m_board.Enemies.Find((e) => e.GetNode().Coordinates == Utility.Vector3Round(transform.position));
+            enemy.FallAndKill();
+        }
     }
 }
