@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4992998766224724}
   - component: {fileID: 114953065791115644}
   - component: {fileID: 114370982267812948}
+  - component: {fileID: 122967533952409226}
   m_Layer: 0
   m_Name: Button
   m_TagString: Untagged
@@ -125,7 +126,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d810fad01ac9094593a08dd02762a2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActivationTarget: {fileID: 0}
+  targetPlatform: {fileID: 0}
+  targetBlock: {fileID: 0}
+  halo: {fileID: 0}
 --- !u!114 &114953065791115644
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -147,3 +150,15 @@ MonoBehaviour:
     m_Bits: 512
   isLevelGoal: 0
   wall: 0
+  isGross: 0
+--- !u!122 &122967533952409226
+Halo:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1592428381581990}
+  m_Enabled: 1
+  m_Color:
+    serializedVersion: 2
+    rgba: 4280038124
+  m_Size: 0.5
