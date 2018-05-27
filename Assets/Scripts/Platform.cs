@@ -6,6 +6,8 @@ public class Platform : MonoBehaviour, ActivatedObject {
 
     Vector3 m_originalPos;
     Node m_node;
+    public string Axis = "y";
+    public int NBlocksMoved = 2;
 
     void Start()
     {
@@ -23,9 +25,14 @@ public class Platform : MonoBehaviour, ActivatedObject {
     {
         if (transform.position == m_originalPos)
         {
+            float originalPos;
+            if (Axis.Equals("x")) originalPos = m_originalPos.x;
+            else if (Axis.Equals("y")) originalPos = m_originalPos.y;
+            else if (Axis.Equals("z")) originalPos = m_originalPos.z;
+            else originalPos = m_originalPos.x;
             m_node.RemoveNeighbors();
             iTween.MoveTo(gameObject, iTween.Hash(
-                "y", m_originalPos.y + Board.spacing * 2f,
+                Axis, originalPos + Board.spacing * NBlocksMoved,
                 "easetype", iTween.EaseType.easeOutBack,
                 "time", 1.0f
             ));
@@ -36,7 +43,9 @@ public class Platform : MonoBehaviour, ActivatedObject {
         {
             m_node.RemoveNeighbors();
             iTween.MoveTo(gameObject, iTween.Hash(
+                "x", m_originalPos.x,
                 "y", m_originalPos.y,
+                "z", m_originalPos.z,
                 "easetype", iTween.EaseType.easeOutBack,
                 "time", 1.0f
             ));
