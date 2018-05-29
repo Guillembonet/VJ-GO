@@ -35,7 +35,7 @@ public class PlayerMover : MonoBehaviour
         UpdateBoard();
         //TODO: comment for production
         PlayerPrefs.DeleteAll();
-        GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
+        Object.FindObjectOfType<TextMeshProUGUI>().GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
         if (!PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").Equals(0)) {
             GameObject.Find("Gem").SetActive(false);
         }
@@ -102,7 +102,7 @@ public class PlayerMover : MonoBehaviour
             {
                 if (destinationPos.y > transform.position.y)
                 {
-                    //Debug.Log("Caso1");
+                    Debug.Log("Caso1");
                     string horizontal = "";
                     float hDestination;
                     float vDestination;
@@ -481,7 +481,8 @@ public class PlayerMover : MonoBehaviour
     void OnTriggerEnter(Collider other) {
         if (PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").Equals(0)) {
             PlayerPrefs.SetInt(SceneManager.GetActiveScene().name + "Gems", PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems")+1);
-            GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
+            Object.FindObjectOfType<TextMeshProUGUI>().GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
+            Debug.Log(PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems"));
             StartCoroutine(explodeGemAnim(other.gameObject));
         }
     }
