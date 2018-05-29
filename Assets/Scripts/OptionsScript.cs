@@ -9,4 +9,8 @@ public class OptionsScript : MonoBehaviour {
 	public void OnValueChanged (){
 		AudioListener.volume = slider.value;
 	}
+
+	public void ResetProgress (){
+		PlayerPrefs.DeleteAll();
+	}
 }
