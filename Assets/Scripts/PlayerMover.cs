@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerMover : MonoBehaviour
 {
@@ -31,6 +33,7 @@ public class PlayerMover : MonoBehaviour
     void Start()
     {
         UpdateBoard();
+        GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").ToString();
     }
 
     //true = player moved; false = player couldn't move
@@ -468,5 +471,22 @@ public class PlayerMover : MonoBehaviour
         ));
 
         yield return new WaitForSeconds(1);
+    }
+
+    void OnTriggerEnter(Collider other) {
+        if (PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").Equals(0)) {
+            PlayerPrefs.SetInt(SceneManager.GetActiveScene().name + "Gems", PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems")+1);
+            GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").ToString();
+            StartCoroutine(explodeGemAnim(other.gameObject));
+        }
+    }
+
+    IEnumerator explodeGemAnim(GameObject g) {
+        g.GetComponentInChildren<ParticleSystem>().Play();
+        g.GetComponentInChildren<MeshRenderer>().enabled = false;
+        g.GetComponent<Behaviour>().enabled = false;
+        yield return new WaitForSeconds(2f);
+        Destroy(g);
+        
     }
 }
