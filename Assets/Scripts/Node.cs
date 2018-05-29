@@ -85,7 +85,7 @@ public class Node : MonoBehaviour {
         List<Node> nList = new List<Node>();
         foreach (Vector3 d in Board.directions)
         {
-            Node foundNeighbour = nodes.Find(n => n.transform.position == transform.position + d);
+            Node foundNeighbour = nodes.Find(n => Utility.Vector3Round(n.transform.position) == Utility.Vector3Round(transform.position + d));
             if (foundNeighbour != null && !nList.Contains(foundNeighbour)) nList.Add(foundNeighbour);
         }
         return nList;
