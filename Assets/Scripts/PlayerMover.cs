@@ -33,9 +33,12 @@ public class PlayerMover : MonoBehaviour
     void Start()
     {
         UpdateBoard();
-        //TODO: uncomment for production
+        //TODO: comment for production
         PlayerPrefs.DeleteAll();
-        GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").ToString();
+        GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
+        if (!PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").Equals(0)) {
+            GameObject.Find("Gem").SetActive(false);
+        }
     }
 
     //true = player moved; false = player couldn't move
@@ -478,7 +481,7 @@ public class PlayerMover : MonoBehaviour
     void OnTriggerEnter(Collider other) {
         if (PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").Equals(0)) {
             PlayerPrefs.SetInt(SceneManager.GetActiveScene().name + "Gems", PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems")+1);
-            GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").ToString();
+            GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
             StartCoroutine(explodeGemAnim(other.gameObject));
         }
     }
