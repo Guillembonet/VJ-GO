@@ -33,6 +33,8 @@ public class PlayerMover : MonoBehaviour
     void Start()
     {
         UpdateBoard();
+        //TODO: uncomment for production
+        PlayerPrefs.DeleteAll();
         GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").ToString();
     }
 
