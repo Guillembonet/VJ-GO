@@ -360,7 +360,7 @@ public class PlayerMover : MonoBehaviour
         playerMovesEvent.Invoke();
     }
 
-    public void MoveRight()
+    public void MoveBackward()
     {
         Vector3 newPosition = transform.position + new Vector3(Board.spacing, 0f, 0f);
         if (!Move(newPosition))
@@ -371,7 +371,7 @@ public class PlayerMover : MonoBehaviour
 
     }
 
-    public void MoveLeft()
+    public void MoveForward()
     {
         Vector3 newPosition = transform.position + new Vector3(-Board.spacing, 0f, 0f);
         if (!Move(newPosition))
@@ -381,7 +381,7 @@ public class PlayerMover : MonoBehaviour
         }
     }
 
-    public void MoveBackward()
+    public void MoveLeft()
     {
         Vector3 newPosition = transform.position + new Vector3(0f, 0f, -Board.spacing);
         if (!Move(newPosition))
@@ -395,7 +395,7 @@ public class PlayerMover : MonoBehaviour
         }
     }
 
-    public void MoveForward()
+    public void MoveRight()
     {
         Vector3 newPosition = transform.position + new Vector3(0f, 0f, Board.spacing);
         if (!Move(newPosition))
