@@ -377,7 +377,11 @@ public class PlayerMover : MonoBehaviour
         if (!Move(newPosition))
         {
             newPosition = transform.position + new Vector3(Board.spacing / 2f, -Board.spacing / 2f, 0f);
-            Move(newPosition);
+            if (!Move(newPosition))
+            {
+                newPosition = transform.position + new Vector3(0f, -Board.spacing, 0f);
+                Move(newPosition);
+            }
         }
 
     }
@@ -388,7 +392,11 @@ public class PlayerMover : MonoBehaviour
         if (!Move(newPosition))
         {
             newPosition = transform.position + new Vector3(-Board.spacing / 2f, Board.spacing / 2f, 0f);
-            Move(newPosition);
+            if (!Move(newPosition))
+            {
+                newPosition = transform.position + new Vector3(0f, Board.spacing, 0f);
+                Move(newPosition);
+            }
         }
     }
 
@@ -398,11 +406,7 @@ public class PlayerMover : MonoBehaviour
         if (!Move(newPosition))
         {
             newPosition = transform.position + new Vector3(0f, Board.spacing / 2f, -Board.spacing / 2f);
-            if (!Move(newPosition))
-            {
-                newPosition = transform.position + new Vector3(0f, Board.spacing, 0f);
-                Move(newPosition);
-            }
+            Move(newPosition);
         }
     }
 
@@ -412,11 +416,7 @@ public class PlayerMover : MonoBehaviour
         if (!Move(newPosition))
         {
             newPosition = transform.position + new Vector3(0f, -Board.spacing / 2f, Board.spacing / 2f);
-            if (!Move(newPosition))
-            {
-                newPosition = transform.position + new Vector3(0f, -Board.spacing, 0f);
-                Move(newPosition);
-            }
+            Move(newPosition);
         }
     }
 
