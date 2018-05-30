@@ -504,6 +504,7 @@ public class PlayerMover : MonoBehaviour
     }
 
     IEnumerator coinAnim(GameObject g) {
+        PlayerPrefs.SetInt(SceneManager.GetActiveScene().name,1);
         Light pointLight = g.GetComponentInChildren<Light>();
         CanvasGroup canvas = Passed.GetComponent<CanvasGroup>();
         Passed.SetActive(true);
@@ -519,7 +520,6 @@ public class PlayerMover : MonoBehaviour
             GameObject.Find("GemCount").SetActive(false);
             GameObject.Find("Game").SetActive(false);
             Passed.transform.Find("Coins").gameObject.SetActive(true);
-            PlayerPrefs.SetInt(SceneManager.GetActiveScene().name,1);
         }
         //Destroy(g);
         
@@ -542,7 +542,6 @@ public class PlayerMover : MonoBehaviour
             GameObject.Find("GemCount").SetActive(false);
             GameObject.Find("Game").SetActive(false);
             Failed.transform.Find("Coins").gameObject.SetActive(true);
-            PlayerPrefs.SetInt(SceneManager.GetActiveScene().name,1);
         }
         //Destroy(g);
         
