@@ -11,6 +11,8 @@ public class PlayerMover : MonoBehaviour
     public Vector3 destination;
     public bool isMoving = false;
 
+    bool m_climbing = false;
+
     public GameObject Passed;
     public GameObject Failed;
     public iTween.EaseType easeTypeMove = iTween.EaseType.linear;
@@ -42,6 +44,7 @@ public class PlayerMover : MonoBehaviour
         if (!PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").Equals(0)) {
             GameObject.Find("Gem").SetActive(false);
         }
+        m_climbing = false;
     }
 
     //true = player moved; false = player couldn't move
@@ -103,6 +106,7 @@ public class PlayerMover : MonoBehaviour
             if (nodeDestination.wall &&
                 (destinationPos.x != transform.position.x || destinationPos.z != transform.position.z))
             {
+                m_climbing = true;
                 if (destinationPos.y > transform.position.y)
                 {
                     //Debug.Log("Caso1");
@@ -196,6 +200,7 @@ public class PlayerMover : MonoBehaviour
             // Si el nodo destino no es vertical, no es escalada vertical, es decir, llegamos a la cumbre
             else
             {   
+                m_climbing = false;
                 // Si vamos hacia arriba
                 if (destinationPos.y > transform.position.y)
                 {
@@ -284,6 +289,7 @@ public class PlayerMover : MonoBehaviour
         // Si la escalada es vertical..
         else if (nodeDestination.wall)
         {
+            m_climbing = true;
             if(destinationPos.y != transform.position.y)
             {
                 //Debug.Log("Caso5 - Escalada vertical");
@@ -340,6 +346,7 @@ public class PlayerMover : MonoBehaviour
         // Si no hay nada raro, caminamos en horizontal
         else
         {
+            m_climbing = false;
             //Debug.Log("Caso6 - Horizontal");
             iTween.MoveTo(gameObject, iTween.Hash(
                 "x", destinationPos.x,
@@ -373,13 +380,23 @@ public class PlayerMover : MonoBehaviour
 
     public void MoveBackward()
     {
-        Vector3 newPosition = transform.position + new Vector3(Board.spacing, 0f, 0f);
-        if (!Move(newPosition))
-        {
-            newPosition = transform.position + new Vector3(Board.spacing / 2f, -Board.spacing / 2f, 0f);
+        Vector3 newPosition;
+        if (m_climbing) {
+            newPosition = transform.position + new Vector3(0f, -Board.spacing, 0f);
             if (!Move(newPosition))
             {
-                newPosition = transform.position + new Vector3(0f, -Board.spacing, 0f);
+                newPosition = transform.position + new Vector3(0f, -Board.spacing / 2f, Board.spacing / 2f);
+                if (!Move(newPosition))
+                {
+                    newPosition = transform.position + new Vector3(Board.spacing / 2f, -Board.spacing / 2f, 0f);
+                    Move(newPosition);
+                }
+            }
+        } else {
+            newPosition = transform.position + new Vector3(Board.spacing, 0f, 0f);
+            if (!Move(newPosition))
+            {
+                newPosition = transform.position + new Vector3(Board.spacing / 2f, -Board.spacing / 2f, 0f);
                 Move(newPosition);
             }
         }
@@ -388,13 +405,23 @@ public class PlayerMover : MonoBehaviour
 
     public void MoveForward()
     {
-        Vector3 newPosition = transform.position + new Vector3(-Board.spacing, 0f, 0f);
-        if (!Move(newPosition))
-        {
-            newPosition = transform.position + new Vector3(-Board.spacing / 2f, Board.spacing / 2f, 0f);
+        Vector3 newPosition;
+        if (m_climbing) {
+            newPosition = transform.position + new Vector3(0f, Board.spacing, 0f);
             if (!Move(newPosition))
             {
-                newPosition = transform.position + new Vector3(0f, Board.spacing, 0f);
+                newPosition = transform.position + new Vector3(-Board.spacing / 2f, Board.spacing / 2f, 0f);
+                if (!Move(newPosition))
+                {
+                    newPosition = transform.position + new Vector3(0f, Board.spacing / 2f, -Board.spacing / 2f);
+                    Move(newPosition);
+                }
+            }
+        } else {
+            newPosition = transform.position + new Vector3(-Board.spacing, 0f, 0f);
+            if (!Move(newPosition))
+            {
+                newPosition = transform.position + new Vector3(-Board.spacing / 2f, Board.spacing / 2f, 0f);
                 Move(newPosition);
             }
         }
@@ -402,21 +429,41 @@ public class PlayerMover : MonoBehaviour
 
     public void MoveLeft()
     {
-        Vector3 newPosition = transform.position + new Vector3(0f, 0f, -Board.spacing);
-        if (!Move(newPosition))
-        {
-            newPosition = transform.position + new Vector3(0f, Board.spacing / 2f, -Board.spacing / 2f);
-            Move(newPosition);
+        Vector3 newPosition;
+        if (m_climbing) {
+            newPosition = transform.position + new Vector3(0f, 0f, -Board.spacing);
+            if (!Move(newPosition))
+            {
+                newPosition = transform.position + new Vector3(Board.spacing, 0f, 0f);
+                Move(newPosition);
+            }
+        } else {
+            newPosition = transform.position + new Vector3(0f, 0f, -Board.spacing);
+            if (!Move(newPosition))
+            {
+                newPosition = transform.position + new Vector3(0f, Board.spacing / 2f, -Board.spacing / 2f);
+                Move(newPosition);
+            }
         }
     }
 
     public void MoveRight()
     {
-        Vector3 newPosition = transform.position + new Vector3(0f, 0f, Board.spacing);
-        if (!Move(newPosition))
-        {
-            newPosition = transform.position + new Vector3(0f, -Board.spacing / 2f, Board.spacing / 2f);
-            Move(newPosition);
+        Vector3 newPosition;
+        if (m_climbing) {
+            newPosition = transform.position + new Vector3(0f, 0f, Board.spacing);
+            if (!Move(newPosition))
+            {
+                newPosition = transform.position + new Vector3(-Board.spacing, 0f, 0f);
+                Move(newPosition);
+            }
+        } else {
+            newPosition = transform.position + new Vector3(0f, 0f, Board.spacing);
+            if (!Move(newPosition))
+            {
+                newPosition = transform.position + new Vector3(0f, -Board.spacing / 2f, Board.spacing / 2f);
+                Move(newPosition);
+            }
         }
     }
 
