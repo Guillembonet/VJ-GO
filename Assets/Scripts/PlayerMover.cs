@@ -10,6 +10,9 @@ public class PlayerMover : MonoBehaviour
 
     public Vector3 destination;
     public bool isMoving = false;
+
+    public GameObject Passed;
+    public GameObject Failed;
     public iTween.EaseType easeTypeMove = iTween.EaseType.linear;
     public iTween.EaseType easeTypeRotate = iTween.EaseType.easeInOutExpo;
 
@@ -479,10 +482,14 @@ public class PlayerMover : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other) {
-        if (PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").Equals(0)) {
+        if (other.gameObject.CompareTag("Gem")) {
             PlayerPrefs.SetInt(SceneManager.GetActiveScene().name + "Gems", PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems")+1);
             GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
             StartCoroutine(explodeGemAnim(other.gameObject));
+        }
+        else if (other.gameObject.CompareTag("Coin")) {
+            Debug.Log("found coin");
+            StartCoroutine(coinAnim(other.gameObject));
         }
     }
 
@@ -492,6 +499,23 @@ public class PlayerMover : MonoBehaviour
         g.GetComponent<Behaviour>().enabled = false;
         yield return new WaitForSeconds(2f);
         Destroy(g);
+        
+    }
+
+    IEnumerator coinAnim(GameObject g) {
+        Light pointLight = g.GetComponentInChildren<Light>();
+        while (pointLight.intensity < 400f) {
+            pointLight.range = pointLight.range + pointLight.range/8f;
+            pointLight.intensity = pointLight.intensity + pointLight.intensity/5f;
+            yield return new WaitForSeconds(0.02f);
+        }
+        if (Passed != null) {
+            GameObject.Find("GemCount").SetActive(false);
+            GameObject.Find("Game").SetActive(false);
+            Passed.SetActive(true);
+            GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
+        }
+        //Destroy(g);
         
     }
 }
