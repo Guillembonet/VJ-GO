@@ -462,6 +462,7 @@ public class PlayerMover : MonoBehaviour
     public void Kill()
     {
         SetDieAnimation();
+        StartCoroutine(dieAnim());
         //playerMovesEvent.Invoke();
     }
 
@@ -504,16 +505,44 @@ public class PlayerMover : MonoBehaviour
 
     IEnumerator coinAnim(GameObject g) {
         Light pointLight = g.GetComponentInChildren<Light>();
+        CanvasGroup canvas = Passed.GetComponent<CanvasGroup>();
+        Passed.SetActive(true);
+        Passed.transform.Find("GemCount").GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
+        Passed.transform.Find("Coins").gameObject.SetActive(false);
         while (pointLight.intensity < 400f) {
             pointLight.range = pointLight.range + pointLight.range/8f;
             pointLight.intensity = pointLight.intensity + pointLight.intensity/5f;
+            canvas.alpha = pointLight.intensity/400f;
             yield return new WaitForSeconds(0.02f);
         }
         if (Passed != null) {
             GameObject.Find("GemCount").SetActive(false);
             GameObject.Find("Game").SetActive(false);
-            Passed.SetActive(true);
-            GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
+            Passed.transform.Find("Coins").gameObject.SetActive(true);
+            PlayerPrefs.SetInt(SceneManager.GetActiveScene().name,1);
+        }
+        //Destroy(g);
+        
+    }
+
+    IEnumerator dieAnim() {
+        isMoving = true;
+        yield return new WaitForSeconds(2f);
+        CanvasGroup canvas = Failed.GetComponent<CanvasGroup>();
+        Debug.Log("ep");
+        if (Failed != null) {
+            Failed.SetActive(true);
+            Debug.Log("ep");
+            Failed.transform.Find("GemCount").GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
+            Failed.transform.Find("Coins").gameObject.SetActive(false);
+            while (canvas.alpha < 1f) {
+                canvas.alpha = canvas.alpha + 0.05f;
+                yield return new WaitForSeconds(0.02f);
+            }
+            GameObject.Find("GemCount").SetActive(false);
+            GameObject.Find("Game").SetActive(false);
+            Failed.transform.Find("Coins").gameObject.SetActive(true);
+            PlayerPrefs.SetInt(SceneManager.GetActiveScene().name,1);
         }
         //Destroy(g);
         
