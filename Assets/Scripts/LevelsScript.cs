@@ -9,7 +9,7 @@ public class LevelsScript : MonoBehaviour {
 	// Use this for initialization
 	public TMP_FontAsset FontNormal;
     public TMP_FontAsset FontGlow;
-	void Start () {
+	public void GetPrefs () {
 		if (PlayerPrefs.GetInt("Level1Gems") == 0) {
 			GameObject.Find("Level1Gem").SetActive(false);
 		}
