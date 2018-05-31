@@ -71,6 +71,7 @@ public class ZombieMover : MonoBehaviour, IEnemy
                             m_foundPlayer = true;
                             m_nextMove = currentNode;
                             StartCoroutine(ScreamRoutine());
+                            AudioManager.Play("ZombieScream");
                         }
                     }
                 }

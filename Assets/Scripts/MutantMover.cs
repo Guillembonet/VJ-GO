@@ -36,11 +36,6 @@ public class MutantMover : MonoBehaviour, IEnemy
         {
             //Debug.Log("First level");
             Node current = m_board.FindNodeAt(transform.position);
-            if (current != null) Debug.Log("Got it");
-            else
-            {
-                Debug.Log(transform.position);
-            }
             Node nextNode = current.GetLinkedNodeInDirection(transform.forward);
             if (nextNode != null)
             {
@@ -110,11 +105,13 @@ public class MutantMover : MonoBehaviour, IEnemy
 
     void SetKillAnimation()
     {
+        AudioManager.Play("MutantAttack");
         anim.SetTrigger("Kill");
     }
 
     void SetDieAnimation()
     {
+        AudioManager.Play("MutantDeath");
         anim.SetTrigger("Die");
     }
 

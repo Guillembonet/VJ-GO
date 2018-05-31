@@ -498,6 +498,7 @@ public class PlayerMover : MonoBehaviour
 
     void SetDieAnimation()
     {
+        AudioManager.Play("PlayerDeath");
         animator.SetTrigger("Die");
     }
 
@@ -510,11 +511,11 @@ public class PlayerMover : MonoBehaviour
     {
         SetDieAnimation();
         StartCoroutine(dieAnim());
-        //playerMovesEvent.Invoke();
     }
 
     public void FallAndDie()
     {
+        AudioManager.Play("PlayerDeath");
         StartCoroutine(FallAndDieRoutine());
     }
 
@@ -542,6 +543,7 @@ public class PlayerMover : MonoBehaviour
     }
 
     IEnumerator explodeGemAnim(GameObject g) {
+        AudioManager.Play("GemExplode");
         g.GetComponentInChildren<ParticleSystem>().Play();
         g.GetComponentInChildren<MeshRenderer>().enabled = false;
         g.GetComponent<Behaviour>().enabled = false;
@@ -593,11 +595,4 @@ public class PlayerMover : MonoBehaviour
         //Destroy(g);
         
     }
-
-    // void PlayAudio(string audio){
-    //     var Player = gameObject.GetComponent<
-    //     if(audio == "Death"){
-
-    //     }
-    // }
 }
