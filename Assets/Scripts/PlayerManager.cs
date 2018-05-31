@@ -20,7 +20,6 @@ public class PlayerManager : MonoBehaviour {
     {
 		if (playerMover.isMoving || playerMover.Board.Enemies.Exists(e => e.isMoving()))
         {
-            Debug.Log("U cant");
             return;
         }
 

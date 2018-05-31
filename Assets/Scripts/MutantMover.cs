@@ -150,11 +150,13 @@ public class MutantMover : MonoBehaviour, IEnemy
 
     public void FallAndKill()
     {
+        m_dead = true;
         StartCoroutine(FallAndKillRoutine());
     }
 
     IEnumerator FallAndKillRoutine()
     {
+        m_board.Enemies.RemoveAll((e) => e.GetNode().Coordinates == Utility.Vector3Round(transform.position));
         iTween.MoveAdd(gameObject, iTween.Hash(
             "y", -2f,
             "easetype", iTween.EaseType.easeInOutElastic,
@@ -162,5 +164,6 @@ public class MutantMover : MonoBehaviour, IEnemy
         ));
 
         yield return new WaitForSeconds(1);
+        gameObject.SetActive(false);
     }
 }

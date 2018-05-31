@@ -10,6 +10,7 @@ public class ZombieMover : MonoBehaviour, IEnemy
     public iTween.EaseType easeTypeMove = iTween.EaseType.linear;
 
     public UnityEvent PlayerKilledEvent;
+    public UnityEvent ZombieMoverEvent;
 
     public float moveSpeed = 1.5f;
     public float rotateTime = 0.5f;
@@ -53,7 +54,9 @@ public class ZombieMover : MonoBehaviour, IEnemy
                 }
             } else
             {
+                if(m_board.FindNodeAt(Utility.Vector3Round(transform.position)) == null) return;
                 Node currentNode = m_board.FindNodeAt(transform.position).GetLinkedNodeInDirection(transform.forward);
+                
                 if (currentNode != null)
                 {
                     if (currentNode == m_board.PlayerNode)
@@ -228,6 +231,7 @@ public class ZombieMover : MonoBehaviour, IEnemy
             SetIdleAnimation();
         }
         isMoving = false;
+        ZombieMoverEvent.Invoke();
     }
 
     IEnumerator ScreamRoutine()
@@ -368,6 +372,7 @@ public class ZombieMover : MonoBehaviour, IEnemy
 
     public void FallAndKill()
     {
+        m_dead = true;
         StartCoroutine(FallAndKillRoutine());
     }
 
@@ -381,7 +386,6 @@ public class ZombieMover : MonoBehaviour, IEnemy
         ));
 
         yield return new WaitForSeconds(1);
-
         gameObject.SetActive(false);
     }
 }
