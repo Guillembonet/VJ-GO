@@ -553,6 +553,7 @@ public class PlayerMover : MonoBehaviour
     }
 
     IEnumerator coinAnim(GameObject g) {
+        AudioManager.Play("CoinPick");
         PlayerPrefs.SetInt(SceneManager.GetActiveScene().name,1);
         Light pointLight = g.GetComponentInChildren<Light>();
         CanvasGroup canvas = Passed.GetComponent<CanvasGroup>();
