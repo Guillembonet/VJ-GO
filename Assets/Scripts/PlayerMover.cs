@@ -593,4 +593,11 @@ public class PlayerMover : MonoBehaviour
         //Destroy(g);
         
     }
+
+    // void PlayAudio(string audio){
+    //     var Player = gameObject.GetComponent<
+    //     if(audio == "Death"){
+
+    //     }
+    // }
 }
