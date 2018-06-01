@@ -122,11 +122,13 @@ public class SpiderMover : MonoBehaviour, IEnemy
 
     void SetKillAnimation()
     {
+        AudioManager.Play("SpiderAttack");
         anim.SetTrigger("Kill");
     }
 
     void SetDieAnimation()
     {
+        AudioManager.Play("SpiderDeath");
         anim.SetTrigger("Die");
     }
 
@@ -168,6 +170,7 @@ public class SpiderMover : MonoBehaviour, IEnemy
 
     IEnumerator FallAndKillRoutine()
     {
+        AudioManager.Play("SpiderDeath");
         m_board.Enemies.RemoveAll((e) => e.GetNode().Coordinates == Utility.Vector3Round(transform.position));
         iTween.MoveAdd(gameObject, iTween.Hash(
             "y", -2f,
