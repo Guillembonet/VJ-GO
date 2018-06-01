@@ -38,13 +38,14 @@ public class PlayerMover : MonoBehaviour
 
     void Start()
     {
-        UpdateBoard();
+        
         //TODO: comment for production
         //PlayerPrefs.DeleteAll();
         GameObject.Find("GemCount").GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
         if (PlayerPrefs.GetInt(SceneManager.GetActiveScene().name + "Gems").Equals(1)) {
-            GameObject.Find("Gem").SetActive(false);
+            GameObject.Find("Game").transform.Find("Gem").gameObject.SetActive(false);
         }
+        UpdateBoard();
         m_climbing = false;
     }
 
