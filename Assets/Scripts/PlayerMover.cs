@@ -29,6 +29,7 @@ public class PlayerMover : MonoBehaviour
 
     Animator animator;
 
+    bool m_isAttacking = false;
     void Awake()
     {
         m_board = Object.FindObjectOfType<Board>().GetComponent<Board>();
@@ -348,30 +349,53 @@ public class PlayerMover : MonoBehaviour
         {
             m_climbing = false;
             //Debug.Log("Caso6 - Horizontal");
-            iTween.MoveTo(gameObject, iTween.Hash(
-                "x", destinationPos.x,
-                "y", destinationPos.y,
-                "z", destinationPos.z,
-                "delay", iTweenDelay,
-                "easetype", easeTypeMove,
-                "speed", moveSpeed,
-                "onstart", "SetRunAnimation"
-            ));
-
-            while (Vector3.Distance(destinationPos, transform.position) > 0.1f)
-            {
-                yield return null;
-            }
-
-            iTween.Stop(gameObject);
             if (enemy != null)
             {
-                enemy.Kill();
-                SetKillAnimation();
+                Debug.Log("We should kill");
+                iTween.MoveTo(gameObject, iTween.Hash(
+                    //"x", transform.position.x != destinationPos.x ? destinationPos.x/2 : destinationPos.x,
+                    "x", destinationPos.x,
+                    "y", destinationPos.y,
+                    "z", destinationPos.z,
+                    //"z", transform.position.z != destinationPos.z ? destinationPos.z/2 : destinationPos.z,
+                    "delay", iTweenDelay,
+                    "easetype", easeTypeMove,
+                    "speed", moveSpeed,
+                    "onstart", "SetRunAnimation"
+                ));
+                
+                while (Vector3.Distance(destinationPos, transform.position) > 0.1f) {
+                    Debug.Log(System.Math.Round(Vector3.Distance(destinationPos, transform.position), 1));
+                    if(System.Math.Round(Vector3.Distance(destinationPos, transform.position), 1) == 1.3 && !m_isAttacking)
+                    {
+                        enemy.Kill();
+                        SetKillAnimation();
+                        m_isAttacking = true;
+                    }
+                    yield return null; 
+                }
+                m_isAttacking= false;
+                iTween.Stop(gameObject);
+                transform.position = destinationPos;
             }
-            else SetIdleAnimation();
-            transform.position = destinationPos;
+            else
+            {
+                Debug.Log("NOT");
+                iTween.MoveTo(gameObject, iTween.Hash(
+                    "x", destinationPos.x,
+                    "y", destinationPos.y,
+                    "z", destinationPos.z,
+                    "delay", iTweenDelay,
+                    "easetype", easeTypeMove,
+                    "speed", moveSpeed,
+                    "onstart", "SetRunAnimation"
+                ));
 
+                while (Vector3.Distance(destinationPos, transform.position) > 0.1f) yield return null;
+                iTween.Stop(gameObject);
+                SetIdleAnimation();
+                transform.position = destinationPos;
+            }
         }
         isMoving = false;
         UpdateBoard();
