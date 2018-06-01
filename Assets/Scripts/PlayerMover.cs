@@ -553,7 +553,22 @@ public class PlayerMover : MonoBehaviour
             "time", 1f
         ));
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2f);
+        CanvasGroup canvas = Failed.GetComponent<CanvasGroup>();
+        Debug.Log("ep");
+        if (Failed != null) {
+            Failed.SetActive(true);
+            Debug.Log("ep");
+            Failed.transform.Find("GemCount").GetComponent<TextMeshProUGUI>().text = (PlayerPrefs.GetInt("Level1Gems") + PlayerPrefs.GetInt("Level2Gems") + PlayerPrefs.GetInt("Level3Gems")).ToString();
+            Failed.transform.Find("Coins").gameObject.SetActive(false);
+            while (canvas.alpha < 1f) {
+                canvas.alpha = canvas.alpha + 0.05f;
+                yield return new WaitForSeconds(0.02f);
+            }
+            GameObject.Find("GemCount").SetActive(false);
+            GameObject.Find("Game").SetActive(false);
+            Failed.transform.Find("Coins").gameObject.SetActive(true);
+        }
     }
 
     void OnTriggerEnter(Collider other) {
