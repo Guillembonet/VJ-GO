@@ -23,7 +23,7 @@ public class LevelsScript : MonoBehaviour {
 		if (PlayerPrefs.GetInt("Level3Gems") == 0) {
 			transform.Find("Level3Gem").gameObject.SetActive(false);
 		} else {
-			transform.Find("Level4Gem").gameObject.SetActive(true);
+			transform.Find("Level3Gem").gameObject.SetActive(true);
 		}
 
 		if (PlayerPrefs.GetInt("Level1") == 1) {

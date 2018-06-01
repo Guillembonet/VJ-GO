@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class OptionsScript : MonoBehaviour {
 
+	void Start() {
+		slider.value = AudioListener.volume;
+	}
 	public Slider slider;
 	public void OnValueChanged (){
 		AudioListener.volume = slider.value;
