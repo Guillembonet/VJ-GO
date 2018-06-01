@@ -504,6 +504,7 @@ public class PlayerMover : MonoBehaviour
 
     void SetKillAnimation()
     {
+        AudioManager.Play("PlayerAttack");
         animator.SetTrigger("Kill");
     }
 
@@ -515,7 +516,7 @@ public class PlayerMover : MonoBehaviour
 
     public void FallAndDie()
     {
-        AudioManager.Play("PlayerDeath");
+        AudioManager.Play("PlayerDeath2");
         StartCoroutine(FallAndDieRoutine());
     }
 

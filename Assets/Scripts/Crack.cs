@@ -70,12 +70,14 @@ public class Crack : MonoBehaviour {
 
     void HandleState1()
     {
+        AudioManager.Play("CrackBreak");
         m_fase2.SetActive(true);
         actualState = state.fase2;
     }
 
     IEnumerator HandleState2Routine()
     {
+        AudioManager.Play("CrackBreak");
         m_fase3.SetActive(true);
         iTween.ScaleTo(m_fase3, iTween.Hash(
             "time", 1f,
@@ -83,7 +85,9 @@ public class Crack : MonoBehaviour {
             "easetype", iTween.EaseType.easeInOutElastic,
             "delay", 0f
         ));
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.8f);
+        AudioManager.Play("CrackSuck");
+        yield return new WaitForSeconds(0.2f);
 
         actualState = state.fase3;
 

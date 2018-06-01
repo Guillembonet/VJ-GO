@@ -33,6 +33,7 @@ public class Button : MonoBehaviour {
 
     IEnumerator BlinkHalo()
     {
+        AudioManager.Play("ButtonClick");
         halo.enabled = false;
         yield return new WaitForSeconds(0.5f);
         halo.enabled = true;

@@ -38,6 +38,8 @@ public class SkyBlock : MonoBehaviour {
         {
             e.Kill();
         }
-        yield return new WaitForSeconds(1.1f);
+        yield return new WaitForSeconds(0.4f);
+
+        AudioManager.Play("SkyBlockImpact");
     }
 }
