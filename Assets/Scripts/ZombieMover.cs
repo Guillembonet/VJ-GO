@@ -113,6 +113,7 @@ public class ZombieMover : MonoBehaviour, IEnemy
             {
                 if (kill)
                 {
+                    yield return new WaitForSeconds(LookTo(heading, transform.forward, lookPos));
                     RunToXYZ(Utility.Vector3Round(transform.position+transform.forward));
                     yield return new WaitForSeconds(0.7f);
                     StartCoroutine(SetKillAnimation());
