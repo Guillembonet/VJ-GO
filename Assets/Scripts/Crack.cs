@@ -61,7 +61,7 @@ public class Crack : MonoBehaviour {
             }
             else if (actualState == state.fase3)
             {
-                HandleState3();
+                StartCoroutine(HandleState3Routine());
             }
         }
 
@@ -85,17 +85,16 @@ public class Crack : MonoBehaviour {
             "easetype", iTween.EaseType.easeInOutElastic,
             "delay", 0f
         ));
-        yield return new WaitForSeconds(0.8f);
-        AudioManager.Play("CrackSuck");
-        yield return new WaitForSeconds(0.2f);
-
+        
         actualState = state.fase3;
-
-        HandleState3();
+        StartCoroutine(HandleState3Routine());
+        yield return new WaitForSeconds(1f);
+        
     }
 
-    void HandleState3()
+    IEnumerator HandleState3Routine()
     {
+        AudioManager.Play("CrackBreak");
         if (HasThePlayerSteppedOnMe())
         {
             PlayerKilledEvent.Invoke();
@@ -105,5 +104,8 @@ public class Crack : MonoBehaviour {
             var enemy = m_board.Enemies.Find((e) => e.GetNode().Coordinates == Utility.Vector3Round(transform.position));
             enemy.FallAndKill();
         }
+
+        yield return new WaitForSeconds(0.5f);
+        AudioManager.Play("CrackSuck");
     }
 }
