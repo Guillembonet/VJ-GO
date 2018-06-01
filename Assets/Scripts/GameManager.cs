@@ -162,4 +162,26 @@ public class GameManager : MonoBehaviour
     {
         m_hasLevelStarted = true;
     }
+
+    void Update(){
+        bool key1 = Input.GetKeyDown(KeyCode.Alpha1);
+        bool key2 = Input.GetKeyDown(KeyCode.Alpha2);
+        bool key3 = Input.GetKeyDown(KeyCode.Alpha3);
+        bool esc = Input.GetKeyDown(KeyCode.Escape);
+
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        if(key1 && currentScene != "Level1"){
+            SceneManager.LoadScene("Level1");
+        }
+        else if(key2 && currentScene != "Level2"){
+            SceneManager.LoadScene("Level2");
+        }
+        else if(key3 && currentScene != "Level3"){
+            SceneManager.LoadScene("Level3");
+        }
+        else if(esc && currentScene != "Menu"){
+            SceneManager.LoadScene("Menu");
+        }
+    }
 }
