@@ -355,6 +355,7 @@ public class ZombieMover : MonoBehaviour, IEnemy
 
     IEnumerator SetKillAnimation()
     {
+        AudioManager.Play("ZombieAttack");
         SetIdleAnimation();
         anim.SetTrigger("Kill");
         yield return new WaitForSeconds(1f);
